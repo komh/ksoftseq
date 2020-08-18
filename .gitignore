@@ -1,0 +1,11 @@
+*~
+*.a
+*.d
+*.dll
+*.exe
+*.lib
+*.o
+*.obj
+*.res
+*_auto.def
+*_auto.libname
