@@ -59,7 +59,9 @@
 /* This MCI driver is compiled with optlink linkage in C-SET/2
    The following pragma allows other dll's etc to call in */
 
+#ifndef __KLIBC__
 #pragma linkage(mciDriverEntry, system )
+#endif
 
 ULONG APIENTRY mciDriverEntry(PVOID pInstance,
                               USHORT usMessage,
