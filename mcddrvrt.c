@@ -69,6 +69,8 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
   DosRequestMutexSem (pInstance->hmtxAccessSem, -2);  // wait for semaphore
   pInstance->Active = TRUE;                           // Set active to TRUE
   QMAudio(pInstance);                                 // Get master audio settings
+  if (pInstance->ulSavedStatus & KAIS_PLAYING)
+     kaiPlay(pInstance->hkai);
   DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
 
@@ -109,6 +111,12 @@ RC MCIDRVRestoreErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   ulParam1       = pFuncBlock->ulParam1;
   pInstance      = pFuncBlock->pInstance;
   pDrvRestoreParms = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
+
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCIDRVRESTOREVALIDFLAGS))
+     return(MCIERR_INVALID_FLAG);
 
 
   return (ulrc);

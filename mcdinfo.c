@@ -146,6 +146,12 @@ RC MCIInfoErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pInfoParms     = (PMCI_INFO_PARMS)pFuncBlock->pParam2;
 
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCIINFOVALIDFLAGS))
+     return(MCIERR_INVALID_FLAG);
+
 
   return (ulrc);
 

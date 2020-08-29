@@ -215,6 +215,8 @@ ULONG  ConvertTime(ULONG ulTime, ULONG ulCurrentFormat, ULONG ulNewFormat)
            case MCI_FORMAT_MILLISECONDS:           // MILLISECONDS
               ulNewTime = MSECFROMMM(ulTime);
               break;
+           default :
+              ulNewTime = ulTime;
            }  /* on switch */
          break;
 

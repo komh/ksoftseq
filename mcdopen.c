@@ -25,6 +25,61 @@
 #include <stdlib.h>                  // Math functions
 #include "mcdtemp.h"                 // Function Prototypes.
 
+/* callback for KAI */
+static ULONG APIENTRY kaiCallback(PVOID pCBData,
+                                  PVOID pBuffer, ULONG ulBufferSize)
+{
+    PINSTANCE pInst = pCBData;
+
+    int written = kmdecDecode(pInst->dec, pBuffer, ulBufferSize);
+
+    if (written < ulBufferSize && pInst->playNotify.hwndCallback)
+    {
+        mdmDriverNotify(pInst->usDeviceID,
+                        pInst->playNotify.hwndCallback,
+                        MM_MCINOTIFY, pInst->playNotify.usUserParm,
+                        MAKEULONG(MCI_PLAY, MCI_NOTIFY_SUCCESSFUL));
+    }
+
+    int pos = kmdecGetPosition(pInst->dec);
+
+    for (int i = 0; i < MAX_CUE_POINTS; i++)
+    {
+        CUENOTIFY *notify = &pInst->cueNotify[i];
+
+        if (notify->On && !notify->Notified && notify->ulCuepoint <= pos)
+        {
+            notify->Notified = TRUE;
+
+            mdmDriverNotify(pInst->usDeviceID,
+                            notify->hwndCallback,
+                            MM_MCICUEPOINT, notify->usUserParm,
+                            MSECTOMM(notify->ulCuepoint));
+
+        }
+    }
+
+    ULONG ulNext = pInst->adviseNotify.ulNext;
+
+    if (ulNext > 0)
+    {
+        while (ulNext < pos)
+        {
+            mdmDriverNotify(pInst->usDeviceID,
+                            pInst->adviseNotify.hwndCallback,
+                            MM_MCIPOSITIONCHANGE,
+                            pInst->adviseNotify.usUserParm,
+                            MSECTOMM(ulNext));
+
+            ulNext += pInst->adviseNotify.ulUnits;
+        }
+
+        pInst->adviseNotify.ulNext = ulNext;
+    }
+
+    return written;
+}
+
 
 /****************************************************************************/
 /*                                                                          */
@@ -88,12 +143,59 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
         pInstance->Headphone = TRUE;
         pInstance->usDeviceType = pDrvOpenParms->usDeviceType;
         pInstance->usDeviceOrd = pDrvOpenParms->usDeviceOrd;
-        memcpy(pDrvOpenParms->pDevParm, pInstance->szDevParams, MAX_DEV_PARAMS);
+        strcpy(pInstance->szDevParams, pDrvOpenParms->pDevParm);
         pDrvOpenParms->pInstance = pInstance;
         pDrvOpenParms->usResourceUnitsRequired = 1;
         pDrvOpenParms->usResourceClass = 1;
         GetINIInstallName(pInstance);
         GetDeviceInfo(pInstance);
+
+        if (ulParam1 & MCI_OPEN_ELEMENT)
+            strcpy(pInstance->szFileName, pDrvOpenParms->pszElementName);
+
+        KMDECAUDIOINFO ai;
+
+        ai.bps = KMDEC_BPS_S16;
+        ai.channels = 2;
+        ai.sampleRate = 44100;
+
+        pInstance->dec = kmdecOpen(pInstance->szFileName, "e:/2gmgsmt.sf2",
+                                   &ai);
+        if (!pInstance->dec)
+        {
+            DosCloseMutexSem(pInstance->hmtxAccessSem);
+
+            free(pInstance);
+
+            return MCIERR_DRIVER_INTERNAL;
+        }
+
+        KAISPEC ksWanted, ksObtained;
+
+        ksWanted.usDeviceIndex = 0;
+        ksWanted.ulType = KAIT_PLAY;
+        ksWanted.ulBitsPerSample = BPS_16;
+        ksWanted.ulSamplingRate = ai.sampleRate;
+        ksWanted.ulDataFormat = 0;
+        ksWanted.ulChannels = ai.channels;
+        ksWanted.ulNumBuffers = 2;
+        ksWanted.ulBufferSize = 4096 * 2 * 2; /* samples * 16bits * 2 ch */
+        ksWanted.fShareable = ulParam1 & MCI_OPEN_SHAREABLE;
+        ksWanted.pfnCallBack = kaiCallback;
+        ksWanted.pCallBackData = pInstance;
+
+        if (kaiOpen(&ksWanted, &ksObtained, &pInstance->hkai))
+        {
+            kmdecClose(pInstance->dec);
+
+            DosCloseMutexSem(pInstance->hmtxAccessSem);
+
+            free(pInstance);
+
+            return MCIERR_DRIVER_INTERNAL;
+        }
+
+        kaiEnableSoftVolume(pInstance->hkai, TRUE);
         }
      }
 
@@ -141,6 +243,10 @@ RC MCIOpenErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*******************************************************/
   if (ulParam1 & ~(MCIOPENVALIDFLAGS))
      return(MCIERR_INVALID_FLAG);
+
+  /* support MCI_OPEN_ELEMENT only */
+  if (!(ulParam1 & MCI_OPEN_ELEMENT))
+     return(MCIERR_UNSUPPORTED_FLAG);
 
 
   return (ulrc);

@@ -31,6 +31,39 @@
 #include <os2me.h>                   // MME includes files.
 #include "mcdtemp.h"                 // MCD Function Prototypes and typedefs
 
+int _CRT_init(void);
+void _CRT_term(void);
+void __ctordtorInit(void);
+void __ctordtorTerm(void);
+
+unsigned long _System _DLL_InitTerm(unsigned long hmod, unsigned long flag)
+{
+    switch (flag)
+    {
+    case 0: // Initialization
+        if (_CRT_init() == -1)
+            return 0;
+
+        __ctordtorInit();
+
+        if (kaiInit(KAIM_AUTO))
+            return 0;
+
+        return 1;
+
+    case 1: // Termination
+        kaiDone();
+
+        __ctordtorTerm();
+
+        _CRT_term();
+
+        return 1;
+    }
+
+  return 0;
+}
+
 
 /****************************************************************************/
 /*                                                                          */
@@ -132,28 +165,58 @@ ULONG APIENTRY mciDriverEntry(PVOID pInstance,
          ulrc = MCIInfo(&ParamBlock);
      break;
 
-    case MCI_ESCAPE:
-    case MCI_PLAY:
-    case MCI_SEEK:
-    case MCI_STOP:
-    case MCI_PAUSE:
     case MCI_GETDEVCAPS:
-    case MCI_SPIN:
+      ulrc = MCICaps(&ParamBlock);
+     break;
+
+    case MCI_LOAD:
+      ulrc = MCILoad(&ParamBlock);
+     break;
+
+    case MCI_PAUSE:
+      ulrc = MCIPause(&ParamBlock);
+     break;
+
+    case MCI_PLAY:
+      ulrc = MCIPlay(&ParamBlock);
+     break;
+
+    case MCI_RESUME:
+      ulrc = MCIResume(&ParamBlock);
+     break;
+
+    case MCI_SEEK:
+      ulrc = MCISeek(&ParamBlock);
+     break;
+
     case MCI_SET:
+      ulrc = MCISet(&ParamBlock);
+     break;
+
+    case MCI_SET_CUEPOINT:
+      ulrc = MCISetCuePoint(&ParamBlock);
+     break;
+
+    case MCI_SET_POSITION_ADVISE:
+      ulrc = MCISetPositionAdvise(&ParamBlock);
+     break;
+
+    case MCI_STOP:
+      ulrc = MCIStop(&ParamBlock);
+     break;
+
+    case MCI_ESCAPE:
+    case MCI_SPIN:
     case MCI_STEP:
     case MCI_RECORD:
     case MCI_SAVE:
     case MCI_CUE:
     case MCI_UPDATE:
-    case MCI_SET_CUEPOINT:
-    case MCI_SET_POSITION_ADVISE:
     case MCI_SET_SYNC_OFFSET:
-    case MCI_LOAD:
     case MCI_MASTERAUDIO:
     case MCI_GETTOC:
     case MCI_DEVICESETTINGS:
     case MCI_CONNECTOR:
-    case MCI_RESUME:
     case MCI_CONNECTORINFO:
     case MCI_CONNECTION:
     case MCI_CAPTURE:

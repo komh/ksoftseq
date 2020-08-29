@@ -11,7 +11,33 @@
 *
 *****************************************************************************/
 
+#include <kai.h>
+#include <kmididec.h>
+
 #define    MAX_FILE_NAME                255
+
+
+typedef struct {
+    HWND    hwndCallback;
+    USHORT  usUserParm;
+} PLAYNOTIFY;
+
+typedef struct {
+    HWND    hwndCallback;
+    ULONG   ulCuepoint;                 /* in ms */
+    USHORT  usUserParm;
+    BOOL    On;
+    BOOL    Notified;
+} CUENOTIFY;
+
+#define MAX_CUE_POINTS  20
+
+typedef struct {
+    HWND    hwndCallback;
+    ULONG   ulUnits;                    /* in ms */
+    ULONG   ulNext;                     /* in ms */
+    USHORT  usUserParm;
+} ADVISENOTIFY;
 
 
 /********************************************************************
@@ -44,6 +70,13 @@ typedef struct _Instance {
     CHAR      szInstallName[MAX_DEVICE_NAME]; /* Device install name            */
     CHAR      szDevParams[MAX_DEV_PARAMS];
     CHAR      szFileName[MAX_FILE_NAME];
+    HKAI      hkai;
+    ULONG     ulTolerance;
+    ULONG     ulSavedStatus;
+    PKMDEC    dec;
+    PLAYNOTIFY playNotify;
+    CUENOTIFY cueNotify[MAX_CUE_POINTS];
+    ADVISENOTIFY adviseNotify;
     } INSTANCE;         /* Audio MCD MCI Instance Block */
 typedef INSTANCE *PINSTANCE;
 
@@ -112,19 +145,20 @@ RC   MCIDRVRestoreErr (FUNCTION_PARM_BLOCK *);// Restore Error
 /***********************************************/
 /* MCIDRV_RESTORE valid flags                  */
 /***********************************************/
-#define MCIDRVRESTOREVALIDFLAGS    MCI_WAIT
+#define MCIDRVRESTOREVALIDFLAGS    (MCI_WAIT | MCI_EXCLUSIVE)
 
 /***********************************************/
 /* MCI_STATUS valid flags                      */
 /***********************************************/
-#define MCISTATUSVALIDFLAGS    MCI_WAIT
+#define MCISTATUSVALIDFLAGS    (MCI_WAIT | MCI_NOTIFY | MCI_STATUS_ITEM)
 
 /***********************************************/
 /* MCI_INFO valid flags                        */
 /***********************************************/
-#define MCIINFOVALIDFLAGS    MCI_WAIT
+#define MCIINFOVALIDFLAGS    (MCI_WAIT | MCI_NOTIFY | MCD_INFO_FLAGS)
 
 #define MCD_INFO_FLAGS       (MCI_INFO_PRODUCT | MCI_INFO_FILE)
+
 
 /***********************************************/
 /* MCD function Prototyes                      */
@@ -148,3 +182,14 @@ RC    MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCIDRVRestoreErr (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCIDRVSaveErr (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCICaps (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCILoad (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCIPause (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCIPlay (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCIResume (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCISeek (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCISet (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCISetCuePoint (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCISetPositionAdvise (FUNCTION_PARM_BLOCK *pFuncBlock);
+RC    MCIStop (FUNCTION_PARM_BLOCK *pFuncBlock);
+

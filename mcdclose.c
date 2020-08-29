@@ -68,6 +68,8 @@ RC MCIClose (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*  for streaming and MMIO considerations            */
   /*****************************************************/
   DosRequestMutexSem (pInstance->hmtxAccessSem, -2);  // wait for semaphore
+  kaiClose(pInstance->hkai);
+  kmdecClose(pInstance->dec);
   free(pInstance);
   DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
@@ -119,6 +121,12 @@ RC MCICloseErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   ulParam1       = pFuncBlock->ulParam1;
   pInstance      = pFuncBlock->pInstance;
   pCloseParms    = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
+
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCICLOSEVALIDFLAGS))
+     return(MCIERR_INVALID_FLAG);
 
 
   return (ulrc);

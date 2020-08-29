@@ -69,6 +69,8 @@ RC MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*  for streaming and MMIO considerations            */
   /*****************************************************/
   DosRequestMutexSem (pInstance->hmtxAccessSem, -2);  // wait for semaphore
+  pInstance->ulSavedStatus = kaiStatus(pInstance->hkai);
+  kaiPause(pInstance->hkai);
   pInstance->Active = FALSE;
   DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
@@ -112,6 +114,11 @@ RC MCIDRVSaveErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pDrvSaveParms     = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
 
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCIDRVSAVEVALIDFLAGS))
+     return(MCIERR_INVALID_FLAG);
 
 
   return (ulrc);

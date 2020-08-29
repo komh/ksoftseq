@@ -52,7 +52,6 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
   ULONG                ulParam1;                 // Message flags
   PMCI_STATUS_PARMS    pStatusParms;             // Pointer to status structure
   PINSTANCE            pInstance;                // Pointer to instance
-  MMTIME               mmTime;                   // Current time in MMTIME format
 
   /*****************************************************/
   /* dereference the values from pFuncBlock            */
@@ -82,42 +81,51 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
     case MCI_STATUS_MODE:
      ULONG_HIWD(ulrc) = MCI_MODE_RETURN;
      if (pInstance->Active == TRUE)
-        pStatusParms->ulReturn = pInstance->ulMode;
+        {
+        ULONG ulStatus = kaiStatus(pInstance->hkai);
+        if (ulStatus & KAIS_PAUSED)
+            pStatusParms->ulReturn = MCI_MODE_PAUSE;
+        else if (ulStatus & KAIS_PLAYING)
+            pStatusParms->ulReturn = MCI_MODE_PLAY;
+        else
+            pStatusParms->ulReturn = MCI_MODE_STOP;
+        }
      else
         pStatusParms->ulReturn = MCI_MODE_NOT_READY;
      break;
 
     case MCI_STATUS_VOLUME:
      ULONG_HIWD(ulrc) = MCI_INTEGER_RETURNED;
-     pStatusParms->ulReturn = pInstance->ulVolume;
+     pStatusParms->ulReturn = MAKEULONG(kaiGetVolume(pInstance->hkai, MCI_STATUS_AUDIO_LEFT),
+                                        kaiGetVolume(pInstance->hkai, MCI_STATUS_AUDIO_RIGHT));
      break;
 
     case MCI_STATUS_LENGTH:
      ULONG_HIWD(ulrc) = MCI_INTEGER_RETURNED;
-     mmTime = pInstance->ulEndPosition - pInstance->ulStartPosition;
-     pStatusParms->ulReturn = ConvertTime(mmTime, MCI_FORMAT_MMTIME, pInstance->ulTimeFormat);
+     pStatusParms->ulReturn =
+        ConvertTime(kmdecGetDuration(pInstance->dec), MCI_FORMAT_MILLISECONDS, pInstance->ulTimeFormat);
      break;
 
     case MCI_STATUS_READY:
      ULONG_HIWD(ulrc) = MCI_TRUE_FALSE_RETURN;
      if (pInstance->Active == TRUE)
-        {
-        if (pInstance->ulMode == MCI_MODE_NOT_READY)
-           pStatusParms->ulReturn = MCI_FALSE;
-        else
-           pStatusParms->ulReturn = MCI_TRUE;
-        }
+        pStatusParms->ulReturn = MCI_TRUE;
      else
         pStatusParms->ulReturn = MCI_FALSE;
      break;
 
     case MCI_STATUS_POSITION:
      ULONG_HIWD(ulrc) = MCI_INTEGER_RETURNED;
-     pStatusParms->ulReturn = pInstance->ulCurrentPosition;       // need to convert from MMTIME
      pStatusParms->ulReturn =
-         ConvertTime(pInstance->ulCurrentPosition, MCI_FORMAT_MMTIME, pInstance->ulTimeFormat);
+         ConvertTime(kmdecGetPosition(pInstance->dec), MCI_FORMAT_MILLISECONDS, pInstance->ulTimeFormat);
      break;
 
+    case MCI_SEQ_STATUS_DIVTYPE:
+    case MCI_SEQ_STATUS_MASTER:
+    case MCI_SEQ_STATUS_OFFSET:
+    case MCI_SEQ_STATUS_PORT:
+    case MCI_SEQ_STATUS_SLAVE:
+    case MCI_SEQ_STATUS_TEMPO:
     default:
       ulrc = MCIERR_UNSUPPORTED_FLAG;
       break;
@@ -176,6 +184,12 @@ RC MCIStatusErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   ulParam1       = pFuncBlock->ulParam1;
   pInstance      = pFuncBlock->pInstance;
   pStatusParms   = (PMCI_STATUS_PARMS)pFuncBlock->pParam2;
+
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCISTATUSVALIDFLAGS))
+     return(MCIERR_INVALID_FLAG);
 
 
   return (ulrc);

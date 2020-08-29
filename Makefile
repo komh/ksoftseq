@@ -120,13 +120,16 @@ BIN_PROGRAMS :=
 #
 # the above is only for DLL
 
-BIN_LIBRARIES := mcdtemp
+BIN_LIBRARIES := ksoftseq
 
-mcdtemp_SRCS      := mcdproc.c mcdclose.c mcddrvrt.c mcddrvsv.c mcdfuncs.c \
-                     mcdinfo.c mcdopen.c mcdstat.c
-mcdtemp_DLL       := yes
-mcdtemp_DEF       := mcdtemp.def
-mcdtemp_NO_IMPLIB := yes
+ksoftseq_SRCS      := mcdproc.c mcdclose.c mcddrvrt.c mcddrvsv.c mcdfuncs.c \
+                      mcdinfo.c mcdopen.c mcdstat.c \
+                      mcdcaps.c mcdload.c mcdpause.c mcdplay.c mcdresume.c \
+                      mcdseek.c mcdset.c mcdcue.c mcdpos.c mcdstop.c
+ksoftseq_DLL       := yes
+ksoftseq_LDLIBS    := -lkai -lkmididec -lfluidsynth
+ksoftseq_DEF       := mcdtemp.def
+ksoftseq_NO_IMPLIB := yes
 
 include Makefile.common
 
