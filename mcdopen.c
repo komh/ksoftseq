@@ -80,6 +80,13 @@ static ULONG APIENTRY kaiCallback(PVOID pCBData,
     return written;
 }
 
+/***********************************************/
+/* MCI_OPEN valid flags                        */
+/*  NOTE --> MCI_NOTIFY will never be sent     */
+/*           open notify is handled by MDM     */
+/***********************************************/
+#define MCIOPENVALIDFLAGS    (MCI_OPEN_SHAREABLE | MCI_WAIT | MCI_OPEN_ELEMENT | MCI_OPEN_PLAYLIST | MCI_OPEN_MMIO)
+
 
 /****************************************************************************/
 /*                                                                          */

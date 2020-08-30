@@ -27,6 +27,12 @@
 #include <os2me.h>                   // MME includes files.
 #include "mcdtemp.h"                 // MCD Function Prototypes and typedefs
 
+/***********************************************/
+/* MCI_STATUS valid flags                      */
+/***********************************************/
+#define MCISTATUSVALIDFLAGS    (MCI_WAIT | MCI_NOTIFY | MCI_STATUS_ITEM)
+
+
 /****************************************************************************/
 /*                                                                          */
 /* SUBROUTINE NAME:  MCIStatus                                              */

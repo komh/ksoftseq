@@ -26,6 +26,11 @@
 #include <stdlib.h>                  // Math functions
 #include "mcdtemp.h"                 // Function Prototypes.
 
+/***********************************************/
+/* MCI_CLOSE valid flags                       */
+/***********************************************/
+#define MCICLOSEVALIDFLAGS    (MCI_WAIT | MCI_NOTIFY | MCI_CLOSE_EXIT)
+
 
 /****************************************************************************/
 /*                                                                          */

@@ -122,45 +122,6 @@ RC   MCIDRVRestoreErr (FUNCTION_PARM_BLOCK *);// Restore Error
 #define MCD_MODE_LOADING       0x0003000L
 
 /***********************************************/
-/* List of valid flags per message             */
-/***********************************************/
-
-/***********************************************/
-/* MCI_OPEN valid flags                        */
-/*  NOTE --> MCI_NOTIFY will never be sent     */
-/*           open notify is handled by MDM     */
-/***********************************************/
-#define MCIOPENVALIDFLAGS    (MCI_OPEN_SHAREABLE | MCI_WAIT | MCI_OPEN_ELEMENT | MCI_OPEN_PLAYLIST | MCI_OPEN_MMIO)
-
-/***********************************************/
-/* MCI_CLOSE valid flags                       */
-/***********************************************/
-#define MCICLOSEVALIDFLAGS    (MCI_WAIT | MCI_NOTIFY)
-
-/***********************************************/
-/* MCIDRV_SAVE valid flags                     */
-/***********************************************/
-#define MCIDRVSAVEVALIDFLAGS   MCI_WAIT
-
-/***********************************************/
-/* MCIDRV_RESTORE valid flags                  */
-/***********************************************/
-#define MCIDRVRESTOREVALIDFLAGS    (MCI_WAIT | MCI_EXCLUSIVE)
-
-/***********************************************/
-/* MCI_STATUS valid flags                      */
-/***********************************************/
-#define MCISTATUSVALIDFLAGS    (MCI_WAIT | MCI_NOTIFY | MCI_STATUS_ITEM)
-
-/***********************************************/
-/* MCI_INFO valid flags                        */
-/***********************************************/
-#define MCIINFOVALIDFLAGS    (MCI_WAIT | MCI_NOTIFY | MCD_INFO_FLAGS)
-
-#define MCD_INFO_FLAGS       (MCI_INFO_PRODUCT | MCI_INFO_FILE)
-
-
-/***********************************************/
 /* MCD function Prototyes                      */
 /***********************************************/
 ULONG  EXPENTRY mciDriverEntry ( PVOID    pInstance,

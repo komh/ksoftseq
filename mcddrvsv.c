@@ -25,6 +25,11 @@
 #include <os2me.h>                   // MME includes files.
 #include "mcdtemp.h"                 // MCD Function Prototypes and typedefs
 
+/***********************************************/
+/* MCIDRV_SAVE valid flags                     */
+/***********************************************/
+#define MCIDRVSAVEVALIDFLAGS   MCI_WAIT
+
 
 /****************************************************************************/
 /*                                                                          */

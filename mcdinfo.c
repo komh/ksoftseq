@@ -24,6 +24,14 @@
 #include <stdlib.h>                  // Math functions
 #include "mcdtemp.h"                 // Function Prototypes.
 
+/***********************************************/
+/* MCI_INFO valid flags                        */
+/***********************************************/
+#define MCIINFOVALIDFLAGS    (MCI_WAIT | MCI_NOTIFY | MCD_INFO_FLAGS)
+
+#define MCD_INFO_FLAGS       (MCI_INFO_PRODUCT | MCI_INFO_FILE)
+
+
 /****************************************************************************/
 /*                                                                          */
 /* SUBROUTINE NAME:  MCIInfo                                                */
