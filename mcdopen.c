@@ -25,6 +25,8 @@
 #include <stdlib.h>                  // Math functions
 #include "mcdtemp.h"                 // Function Prototypes.
 
+#include <errno.h>                   // errno, EINVAL
+
 /* callback for KAI */
 static ULONG APIENTRY kaiCallback(PVOID pCBData,
                                   PVOID pBuffer, ULONG ulBufferSize)
@@ -79,6 +81,43 @@ static ULONG APIENTRY kaiCallback(PVOID pCBData,
 
     return written;
 }
+
+static int ioRead(int fd, void *buf, size_t n)
+{
+    ULONG rc = mmioRead(fd, buf, n);
+
+    return rc == MMIO_ERROR ? -1 : rc;
+}
+
+static int ioSeek(int fd, long offset, int origin)
+{
+    static LONG lOrigins[] = { SEEK_SET, SEEK_CUR, SEEK_END };
+
+    if( origin >= sizeof( lOrigins ) / sizeof( lOrigins[ 0 ]))
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
+    ULONG rc = mmioSeek(fd, offset, lOrigins[origin]);
+
+    return rc == MMIO_ERROR ? -1 : rc;
+}
+
+static int ioTell(int fd)
+{
+    ULONG rc = mmioSeek(fd, 0, SEEK_CUR);
+
+    return rc == MMIO_ERROR ? -1 : rc;
+}
+
+KMDECIOFUNCS io = {
+    .open = NULL,
+    .read = ioRead,
+    .seek = ioSeek,
+    .tell = ioTell,
+    .close = NULL
+};
 
 /***********************************************/
 /* MCI_OPEN valid flags                        */
@@ -170,16 +209,23 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
            {
            strcpy(pInstance->szFileName, pDrvOpenParms->pszElementName);
 
-           pInstance->dec = kmdecOpen(pInstance->szFileName, "e:/2gmgsmt.sf2",
-                                      &ai);
-           if (!pInstance->dec)
-              {
-              DosCloseMutexSem(pInstance->hmtxAccessSem);
+           pInstance->dec = kmdecOpen(pInstance->szFileName,
+                                      "e:/2gmgsmt.sf2", &ai);
+           }
+        else if (ulParam1 & MCI_OPEN_MMIO)
+           {
+           HMMIO fd = (HMMIO)pDrvOpenParms->pszElementName;
 
-              free(pInstance);
+           pInstance->dec = kmdecOpenFdEx(fd, "e:/2gmgsmt.sf2", &ai, &io);
+           }
 
-              LOG_RETURN(MCIERR_DRIVER_INTERNAL);
-              }
+        if (ulParam1 & (MCI_OPEN_ELEMENT | MCI_OPEN_MMIO) && !pInstance->dec)
+           {
+           DosCloseMutexSem(pInstance->hmtxAccessSem);
+
+           free(pInstance);
+
+           LOG_RETURN(MCIERR_DRIVER_INTERNAL);
            }
 
         KAISPEC ksWanted, ksObtained;
@@ -258,8 +304,8 @@ RC MCIOpenErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   if (ulParam1 & ~(MCIOPENVALIDFLAGS))
      LOG_RETURN(MCIERR_INVALID_FLAG);
 
-  /* MCI_OPEN_MMIO and MCI_OPEN_PLAYLIST are not supported */
-  if (ulParam1 & (MCI_OPEN_MMIO | MCI_OPEN_PLAYLIST))
+  /* MCI_OPEN_PLAYLIST are not supported */
+  if (ulParam1 & MCI_OPEN_PLAYLIST)
      LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
 
   /* make compiler happy */

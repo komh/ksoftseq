@@ -71,17 +71,11 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCILOADVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    /* support MCI_OPEN_ELEMENT only */
-    if (!(ulParam1 & MCI_OPEN_ELEMENT))
-        LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
-
     DosRequestMutexSem(pInst->hmtxAccessSem, -2);
 
     kaiStop(pInst->hkai);
 
     kmdecClose(pInst->dec);
-
-    strcpy(pInst->szFileName, pParam2->pszElementName);
 
     KMDECAUDIOINFO ai;
 
@@ -89,8 +83,22 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
     ai.channels = 2;
     ai.sampleRate = 44100;
 
-    pInst->dec = kmdecOpen(pInst->szFileName, "e:/2gmgsmt.sf2", &ai);
-    if (!pInst->dec)
+    if (ulParam1 & MCI_OPEN_ELEMENT)
+    {
+        strcpy(pInst->szFileName, pParam2->pszElementName);
+
+        pInst->dec = kmdecOpen(pInst->szFileName, "e:/2gmgsmt.sf2", &ai);
+    }
+    else /* if (ulParam1 & MCI_OPEN_MMIO) */
+    {
+        HMMIO fd = (HMMIO)pParam2->pszElementName;
+        extern KMDECIOFUNCS io;
+
+        if (!rc)
+            pInst->dec = kmdecOpenFdEx(fd, "e:/2gmgsmt.sf2", &ai, &io);
+    }
+
+    if (!rc && !pInst->dec)
         rc = MCIERR_DRIVER_INTERNAL;
 
     memset(pInst->cueNotify, 0, sizeof(pInst->cueNotify));
