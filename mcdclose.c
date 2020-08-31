@@ -136,6 +136,10 @@ RC MCICloseErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   if (ulParam1 & ~(MCICLOSEVALIDFLAGS))
      LOG_RETURN(MCIERR_INVALID_FLAG);
 
+  /* make compiler happy */
+  (void)pInstance;
+  (void)pCloseParms;
+
 
   LOG_RETURN(ulrc);
 

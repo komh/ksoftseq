@@ -80,6 +80,9 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
      kaiPlay(pInstance->hkai);
   DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
+  /* make compiler happy */
+  (void)pDrvRestoreParms;
+
 
   LOG_RETURN(ulrc);
 
@@ -126,6 +129,10 @@ RC MCIDRVRestoreErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*******************************************************/
   if (ulParam1 & ~(MCIDRVRESTOREVALIDFLAGS))
      LOG_RETURN(MCIERR_INVALID_FLAG);
+
+  /* make compiler happy */
+  (void)pInstance;
+  (void)pDrvRestoreParms;
 
 
   LOG_RETURN(ulrc);

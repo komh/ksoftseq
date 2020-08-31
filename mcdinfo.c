@@ -164,6 +164,10 @@ RC MCIInfoErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   if (ulParam1 & ~(MCIINFOVALIDFLAGS))
      LOG_RETURN(MCIERR_INVALID_FLAG);
 
+  /* make compiler happy */
+  (void)pInstance;
+  (void)pInfoParms;
+
 
   LOG_RETURN(ulrc);
 

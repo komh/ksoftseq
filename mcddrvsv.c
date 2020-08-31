@@ -56,7 +56,6 @@ RC MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock)
 {
   ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
   ULONG                ulParam1;                 // Message flags
-  PMCI_INFO_PARMS      pInfoParms;               // Pointer to info structure
   PMCI_GENERIC_PARMS   pDrvSaveParms;            // Pointer to GENERIC structure
   PINSTANCE            pInstance;                // Pointer to instance
 
@@ -80,6 +79,9 @@ RC MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock)
   kaiPause(pInstance->hkai);
   pInstance->Active = FALSE;
   DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
+
+  /* make compiler happy */
+  (void)pDrvSaveParms;
 
 
   LOG_RETURN(ulrc);
@@ -110,7 +112,6 @@ RC MCIDRVSaveErr (FUNCTION_PARM_BLOCK *pFuncBlock)
 {
   ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
   ULONG                ulParam1;                 // Message flags
-  PMCI_INFO_PARMS      pInfoParms;               // Pointer to info structure
   PMCI_GENERIC_PARMS   pDrvSaveParms;            // Pointer to GENERIC structure
   PINSTANCE            pInstance;                // Pointer to instance
 
@@ -128,6 +129,10 @@ RC MCIDRVSaveErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*******************************************************/
   if (ulParam1 & ~(MCIDRVSAVEVALIDFLAGS))
      LOG_RETURN(MCIERR_INVALID_FLAG);
+
+  /* make compiler happy */
+  (void)pInstance;
+  (void)pDrvSaveParms;
 
 
   LOG_RETURN(ulrc);

@@ -193,7 +193,6 @@ VOID  GetDeviceInfo(PINSTANCE pInstance)
 /****************************************************************************/
 ULONG  ConvertTime(ULONG ulTime, ULONG ulCurrentFormat, ULONG ulNewFormat)
 {
-   ULONG ulrc;
    ULONG ulNewTime=0;
 
    switch (ulCurrentFormat)

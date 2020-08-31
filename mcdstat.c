@@ -200,6 +200,9 @@ RC MCIStatusErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   if (ulParam1 & ~(MCISTATUSVALIDFLAGS))
      LOG_RETURN(MCIERR_INVALID_FLAG);
 
+  /* make compiler happy */
+  (void)pInstance;
+
 
   LOG_RETURN(ulrc);
 

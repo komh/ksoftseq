@@ -111,7 +111,6 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
 {
   ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
   ULONG                ulParam1;                 // Message flags
-  PMCI_INFO_PARMS      pInfoParms;               // Pointer to info structure
   PMMDRV_OPEN_PARMS    pDrvOpenParms;            // Pointer to MMDRV_OPEN structure
   PINSTANCE            pInstance;                // Pointer to instance
 
@@ -241,7 +240,6 @@ RC MCIOpenErr (FUNCTION_PARM_BLOCK *pFuncBlock)
 {
   ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
   ULONG                ulParam1;                 // Message flags
-  PMCI_INFO_PARMS      pInfoParms;               // Pointer to info structure
   PMMDRV_OPEN_PARMS    pDrvOpenParms;            // Pointer to MMDRV_OPEN structure
   PINSTANCE            pInstance;                // Pointer to instance
 
@@ -263,6 +261,9 @@ RC MCIOpenErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   /* MCI_OPEN_MMIO and MCI_OPEN_PLAYLIST are not supported */
   if (ulParam1 & (MCI_OPEN_MMIO | MCI_OPEN_PLAYLIST))
      LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
+
+  /* make compiler happy */
+  (void)pInstance;
 
 
   LOG_RETURN(ulrc);
