@@ -161,25 +161,27 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
         GetINIInstallName(pInstance);
         GetDeviceInfo(pInstance);
 
-        if (ulParam1 & MCI_OPEN_ELEMENT)
-            strcpy(pInstance->szFileName, pDrvOpenParms->pszElementName);
-
         KMDECAUDIOINFO ai;
 
         ai.bps = KMDEC_BPS_S16;
         ai.channels = 2;
         ai.sampleRate = 44100;
 
-        pInstance->dec = kmdecOpen(pInstance->szFileName, "e:/2gmgsmt.sf2",
-                                   &ai);
-        if (!pInstance->dec)
-        {
-            DosCloseMutexSem(pInstance->hmtxAccessSem);
+        if (ulParam1 & MCI_OPEN_ELEMENT)
+           {
+           strcpy(pInstance->szFileName, pDrvOpenParms->pszElementName);
 
-            free(pInstance);
+           pInstance->dec = kmdecOpen(pInstance->szFileName, "e:/2gmgsmt.sf2",
+                                      &ai);
+           if (!pInstance->dec)
+              {
+              DosCloseMutexSem(pInstance->hmtxAccessSem);
 
-            LOG_RETURN(MCIERR_DRIVER_INTERNAL);
-        }
+              free(pInstance);
+
+              LOG_RETURN(MCIERR_DRIVER_INTERNAL);
+              }
+           }
 
         KAISPEC ksWanted, ksObtained;
 
@@ -258,8 +260,8 @@ RC MCIOpenErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   if (ulParam1 & ~(MCIOPENVALIDFLAGS))
      LOG_RETURN(MCIERR_INVALID_FLAG);
 
-  /* support MCI_OPEN_ELEMENT only */
-  if (!(ulParam1 & MCI_OPEN_ELEMENT))
+  /* MCI_OPEN_MMIO and MCI_OPEN_PLAYLIST are not supported */
+  if (ulParam1 & (MCI_OPEN_MMIO | MCI_OPEN_PLAYLIST))
      LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
 
 
