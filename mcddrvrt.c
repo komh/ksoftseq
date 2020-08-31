@@ -28,7 +28,7 @@
 /***********************************************/
 /* MCIDRV_RESTORE valid flags                  */
 /***********************************************/
-#define MCIDRVRESTOREVALIDFLAGS    (MCI_WAIT | MCI_EXCLUSIVE)
+#define MCIDRVRESTOREVALIDFLAGS    (MCI_WAIT | MCI_OPEN_SHAREABLE | MCI_EXCLUSIVE)
 
 
 /****************************************************************************/
