@@ -146,7 +146,7 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
   /***************************************************************/
   /* Send back a notification if the notify flag was on          */
   /***************************************************************/
-  if ((ulParam1 & MCI_NOTIFY) & (!ulrc))
+  if ((ulParam1 & MCI_NOTIFY) & (!ULONG_LOWD(ulrc)))
      mdmDriverNotify (pInstance->usDeviceID,
                       pStatusParms->hwndCallback,
                       MM_MCINOTIFY,
