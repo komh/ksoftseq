@@ -107,6 +107,9 @@ ULONG APIENTRY mciDriverEntry(PVOID pInstance,
   ULONG                   ulrc;                // Return Code
   FUNCTION_PARM_BLOCK     ParamBlock;          // Encapsulate Parameters
 
+  LOG_ENTER("usMessage = %d, ulParam1 = 0x%lx, usUserParm = %d",
+            usMessage, ulParam1, usUserParm);
+
   /***********************************************/
   /* Copy the mciDriverEntry parameters to a     */
   /* structure which contains all of them.  This */
@@ -246,6 +249,6 @@ ULONG APIENTRY mciDriverEntry(PVOID pInstance,
     }   /* Switch */
 
 
-  return (ulrc);    /* Return to MDM */
+  LOG_RETURN(ulrc);    /* Return to MDM */
 
 } /* mciDriverEntry */

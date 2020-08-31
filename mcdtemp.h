@@ -14,6 +14,8 @@
 #include <kai.h>
 #include <kmididec.h>
 
+#include "klogger.h"
+
 #define    MAX_FILE_NAME                255
 
 
@@ -154,3 +156,18 @@ RC    MCISetCuePoint (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCISetPositionAdvise (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCIStop (FUNCTION_PARM_BLOCK *pFuncBlock);
 
+/***********************************************/
+/* Logging macros                              */
+/***********************************************/
+
+#define LOG_FILE    "\\ksoftseq.log"
+
+#define LOG_ENTER(format, ...) \
+        kloggerFile(LOG_FILE, "%s entered: " format, __func__, __VA_ARGS__)
+
+#define LOG_MSG(format, ...) \
+        kloggerFile(LOG_FILE, "%s: " format, __func__, __VA_ARGS__)
+
+#define LOG_RETURN(rc) do { \
+        kloggerFile(LOG_FILE, "%s returned, rc = %ld", __func__, (rc)); \
+        return (rc); } while (0)

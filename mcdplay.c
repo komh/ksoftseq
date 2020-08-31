@@ -60,15 +60,17 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
+    LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCIPLAYVALIDFLAGS))
-        return MCIERR_INVALID_FLAG;
+        LOG_RETURN(MCIERR_INVALID_FLAG);
 
     /* MCI_FROM and MCI_TO are not supported yet */
     if (ulParam1 & (MCI_FROM | MCI_TO))
-        return MCIERR_UNSUPPORTED_FLAG;
+        LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
 
     DosRequestMutexSem(pInst->hmtxAccessSem, -2);
 
@@ -88,5 +90,5 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
 
     /* notifying is done in kaiCallback() in mcdopen.c */
 
-    return rc;
+    LOG_RETURN(rc);
 }

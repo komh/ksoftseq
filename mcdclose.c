@@ -65,6 +65,7 @@ RC MCIClose (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pCloseParms    = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
 
   /*****************************************************/
   /* NOTE ----->>>                                     */
@@ -89,7 +90,7 @@ RC MCIClose (FUNCTION_PARM_BLOCK *pFuncBlock)
                              MAKEULONG (MCI_CLOSE, MCI_NOTIFY_SUCCESSFUL));
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCIClose */
 
@@ -127,13 +128,15 @@ RC MCICloseErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pCloseParms    = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+
   /*******************************************************/
   /* Validate that we have only valid flags              */
   /*******************************************************/
   if (ulParam1 & ~(MCICLOSEVALIDFLAGS))
-     return(MCIERR_INVALID_FLAG);
+     LOG_RETURN(MCIERR_INVALID_FLAG);
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCICloseErr */

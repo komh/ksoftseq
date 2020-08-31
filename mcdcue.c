@@ -63,11 +63,14 @@ RC MCISetCuePoint(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
+    LOG_ENTER("ulParam1 = 0x%lx, ulCuepoint = %ld",
+              ulParam1, pParam2->ulCuepoint);
+
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCISETCUEPOINTVALIDFLAGS))
-        return MCIERR_INVALID_FLAG;
+        LOG_RETURN(MCIERR_INVALID_FLAG);
 
     DosRequestMutexSem(pInst->hmtxAccessSem, -2);
 
@@ -149,5 +152,5 @@ RC MCISetCuePoint(FUNCTION_PARM_BLOCK *pFuncBlock)
                              MAKEULONG(MCI_SET_CUEPOINT,
                                        MCI_NOTIFY_SUCCESSFUL));
 
-    return rc;
+    LOG_RETURN(rc);
 }

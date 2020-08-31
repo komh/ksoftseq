@@ -63,11 +63,14 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
+    LOG_ENTER("ulParam1 = 0x%lx, usMessage = %d, ulItem = %d",
+              ulParam1, pParam2->usMessage, pParam2->ulItem);
+
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCIGETDEVCAPSVALIDFLAGS))
-        return MCIERR_INVALID_FLAG;
+        LOG_RETURN(MCIERR_INVALID_FLAG);
 
     DosRequestMutexSem(pInst->hmtxAccessSem, -2);
 
@@ -196,5 +199,5 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
                              pFuncBlock->usUserParm,
                              MAKEULONG(MCI_GETDEVCAPS, MCI_NOTIFY_SUCCESSFUL));
 
-    return rc;
+    LOG_RETURN(rc);
 }

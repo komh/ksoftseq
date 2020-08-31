@@ -121,6 +121,10 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
   ulParam1       = pFuncBlock->ulParam1;
   pDrvOpenParms  = (PMMDRV_OPEN_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx, pszElementName = %p, [%s]",
+            pFuncBlock->ulParam1, pDrvOpenParms->pszElementName,
+            ulParam1 & MCI_OPEN_ELEMENT ? pDrvOpenParms->pszElementName : "");
+
   /*******************************************************************/
   /* Allocate and initialize the instance structure                  */
   /*******************************************************************/
@@ -174,7 +178,7 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
 
             free(pInstance);
 
-            return MCIERR_DRIVER_INTERNAL;
+            LOG_RETURN(MCIERR_DRIVER_INTERNAL);
         }
 
         KAISPEC ksWanted, ksObtained;
@@ -199,7 +203,7 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
 
             free(pInstance);
 
-            return MCIERR_DRIVER_INTERNAL;
+            LOG_RETURN(MCIERR_DRIVER_INTERNAL);
         }
 
         kaiEnableSoftVolume(pInstance->hkai, TRUE);
@@ -207,7 +211,7 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
      }
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCIOpen */
 
@@ -245,18 +249,21 @@ RC MCIOpenErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   ulParam1       = pFuncBlock->ulParam1;
   pDrvOpenParms  = (PMMDRV_OPEN_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx, pszElementName = [%s]",
+            pFuncBlock->ulParam1, pDrvOpenParms->pszElementName);
+
   /*******************************************************/
   /* Validate that we have only valid flags              */
   /*******************************************************/
   if (ulParam1 & ~(MCIOPENVALIDFLAGS))
-     return(MCIERR_INVALID_FLAG);
+     LOG_RETURN(MCIERR_INVALID_FLAG);
 
   /* support MCI_OPEN_ELEMENT only */
   if (!(ulParam1 & MCI_OPEN_ELEMENT))
-     return(MCIERR_UNSUPPORTED_FLAG);
+     LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCIOpenErr */
 

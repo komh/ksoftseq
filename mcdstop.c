@@ -60,11 +60,13 @@ RC MCIStop(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
+    LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCISTOPVALIDFLAGS))
-        return MCIERR_INVALID_FLAG;
+        LOG_RETURN(MCIERR_INVALID_FLAG);
 
     DosRequestMutexSem(pInst->hmtxAccessSem, -2);
 
@@ -82,5 +84,5 @@ RC MCIStop(FUNCTION_PARM_BLOCK *pFuncBlock)
                              pFuncBlock->usUserParm,
                              MAKEULONG(MCI_STOP, MCI_NOTIFY_SUCCESSFUL));
 
-    return rc;
+    LOG_RETURN(rc);
 }

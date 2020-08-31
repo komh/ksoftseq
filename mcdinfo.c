@@ -65,6 +65,8 @@ RC MCIInfo   (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pInfoParms     = (PMCI_INFO_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+
 
   /**********************************************************/
   /* Lock access to this instance until this command is done*/
@@ -116,7 +118,7 @@ RC MCIInfo   (FUNCTION_PARM_BLOCK *pFuncBlock)
                       MAKEULONG (MCI_INFO, MCI_NOTIFY_SUCCESSFUL));
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCIInfo */
 
@@ -154,14 +156,16 @@ RC MCIInfoErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pInfoParms     = (PMCI_INFO_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+
   /*******************************************************/
   /* Validate that we have only valid flags              */
   /*******************************************************/
   if (ulParam1 & ~(MCIINFOVALIDFLAGS))
-     return(MCIERR_INVALID_FLAG);
+     LOG_RETURN(MCIERR_INVALID_FLAG);
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCIInfoErr */
 

@@ -61,15 +61,19 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
+    LOG_ENTER("ulParam1 = 0x%lx, pszElementName = %p, [%s]",
+              ulParam1, pParam2->pszElementName,
+              ulParam1 & MCI_OPEN_ELEMENT ? pParam2->pszElementName : "");
+
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCILOADVALIDFLAGS))
-        return MCIERR_INVALID_FLAG;
+        LOG_RETURN(MCIERR_INVALID_FLAG);
 
     /* support MCI_OPEN_ELEMENT only */
     if (!(ulParam1 & MCI_OPEN_ELEMENT))
-        return MCIERR_UNSUPPORTED_FLAG;
+        LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
 
     DosRequestMutexSem(pInst->hmtxAccessSem, -2);
 
@@ -106,5 +110,5 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
                              pFuncBlock->usUserParm,
                              MAKEULONG(MCI_LOAD, MCI_NOTIFY_SUCCESSFUL));
 
-    return rc;
+    LOG_RETURN(rc);
 }

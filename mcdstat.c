@@ -66,6 +66,7 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pStatusParms   = (PMCI_STATUS_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx, ulItem = %ld", ulParam1, pStatusParms->ulItem);
 
   /**********************************************************/
   /* Lock access to this instance until this command is done*/
@@ -153,7 +154,7 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
                       MAKEULONG (MCI_STATUS, MCI_NOTIFY_SUCCESSFUL));
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCIStatus */
 
@@ -191,14 +192,16 @@ RC MCIStatusErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pStatusParms   = (PMCI_STATUS_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx, ulItem = %ld", ulParam1, pStatusParms->ulItem);
+
   /*******************************************************/
   /* Validate that we have only valid flags              */
   /*******************************************************/
   if (ulParam1 & ~(MCISTATUSVALIDFLAGS))
-     return(MCIERR_INVALID_FLAG);
+     LOG_RETURN(MCIERR_INVALID_FLAG);
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCIStatusErr */
 

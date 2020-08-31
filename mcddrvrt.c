@@ -65,6 +65,7 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pDrvRestoreParms = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
 
   /*****************************************************/
   /* NOTE ----->>>                                     */
@@ -80,7 +81,7 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
   DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of Open */
 
@@ -118,13 +119,15 @@ RC MCIDRVRestoreErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pDrvRestoreParms = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+
   /*******************************************************/
   /* Validate that we have only valid flags              */
   /*******************************************************/
   if (ulParam1 & ~(MCIDRVRESTOREVALIDFLAGS))
-     return(MCIERR_INVALID_FLAG);
+     LOG_RETURN(MCIERR_INVALID_FLAG);
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of Open */

@@ -63,11 +63,16 @@ RC MCISet(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
+    LOG_ENTER("ulParam1 = 0x%lx, ulAudio = %ld, ulLevel = %ld, "
+              "ulTimeFormat = %ld",
+              ulParam1, pParam2->ulAudio, pParam2->ulLevel,
+              pParam2->ulTimeFormat);
+
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCISETVALIDFLAGS))
-        return MCIERR_INVALID_FLAG;
+        LOG_RETURN(MCIERR_INVALID_FLAG);
 
     DosRequestMutexSem(pInst->hmtxAccessSem, -2);
 
@@ -124,5 +129,5 @@ RC MCISet(FUNCTION_PARM_BLOCK *pFuncBlock)
                              pFuncBlock->usUserParm,
                              MAKEULONG(MCI_SET, MCI_NOTIFY_SUCCESSFUL));
 
-    return rc;
+    LOG_RETURN(rc);
 }

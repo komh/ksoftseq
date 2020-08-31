@@ -67,6 +67,8 @@ RC MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pDrvSaveParms     = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+
   /*****************************************************/
   /* NOTE ----->>>                                     */
   /*  This is the basic function that should be        */
@@ -80,7 +82,7 @@ RC MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock)
   DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCIDRVSave */
 
@@ -119,13 +121,15 @@ RC MCIDRVSaveErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pDrvSaveParms     = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
 
+  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+
   /*******************************************************/
   /* Validate that we have only valid flags              */
   /*******************************************************/
   if (ulParam1 & ~(MCIDRVSAVEVALIDFLAGS))
-     return(MCIERR_INVALID_FLAG);
+     LOG_RETURN(MCIERR_INVALID_FLAG);
 
 
-  return (ulrc);
+  LOG_RETURN(ulrc);
 
 }      /* end of MCIDRVSaveErr */
