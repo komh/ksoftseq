@@ -243,15 +243,15 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
         ksWanted.pCallBackData = pInstance;
 
         if (kaiOpen(&ksWanted, &ksObtained, &pInstance->hkai))
-        {
-            kmdecClose(pInstance->dec);
+           {
+           kmdecClose(pInstance->dec);
 
-            DosCloseMutexSem(pInstance->hmtxAccessSem);
+           DosCloseMutexSem(pInstance->hmtxAccessSem);
 
-            free(pInstance);
+           free(pInstance);
 
-            LOG_RETURN(MCIERR_DRIVER_INTERNAL);
-        }
+           LOG_RETURN(MCIERR_DRIVER_INTERNAL);
+           }
 
         kaiEnableSoftVolume(pInstance->hkai, TRUE);
         }
