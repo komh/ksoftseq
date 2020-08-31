@@ -192,7 +192,7 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
     /***************************************************************/
     /* Send back a notification if the notify flag was on          */
     /***************************************************************/
-    if (ulParam1 & MCI_NOTIFY)
+    if ((ulParam1 & MCI_NOTIFY) && !ULONG_LOWD(rc))
         rc = mdmDriverNotify(pInst->usDeviceID,
                              pParam2->hwndCallback,
                              MM_MCINOTIFY,
