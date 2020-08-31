@@ -295,8 +295,9 @@ RC MCIOpenErr (FUNCTION_PARM_BLOCK *pFuncBlock)
   ulParam1       = pFuncBlock->ulParam1;
   pDrvOpenParms  = (PMMDRV_OPEN_PARMS)pFuncBlock->pParam2;
 
-  LOG_ENTER("ulParam1 = 0x%lx, pszElementName = [%s]",
-            pFuncBlock->ulParam1, pDrvOpenParms->pszElementName);
+  LOG_ENTER("ulParam1 = 0x%lx, pszElementName = %p, [%s]",
+            pFuncBlock->ulParam1, pDrvOpenParms->pszElementName,
+            ulParam1 & MCI_OPEN_ELEMENT ? pDrvOpenParms->pszElementName : "");
 
   /*******************************************************/
   /* Validate that we have only valid flags              */
