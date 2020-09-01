@@ -21,6 +21,8 @@
 #include <stdlib.h>                  // Math functions
 #include "mcdtemp.h"                 // Function Prototypes.
 
+#include <sys/stat.h>                // stat()
+
 /***********************************************/
 /* MCI_LOAD valid flags                  */
 /***********************************************/
@@ -83,11 +85,19 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
     ai.channels = 2;
     ai.sampleRate = 44100;
 
+    const char *sf2 = getenv("KSOFTSEQ_SF2");
+    struct stat st;
+
+    if (!sf2 || stat(sf2, &st) == -1)
+        sf2 = szDefaultSf2;
+
+    LOG_MSG("sf2 = [%s]", sf2);
+
     if (ulParam1 & MCI_OPEN_ELEMENT)
     {
         strcpy(pInst->szFileName, pParam2->pszElementName);
 
-        pInst->dec = kmdecOpen(pInst->szFileName, "e:/2gmgsmt.sf2", &ai);
+        pInst->dec = kmdecOpen(pInst->szFileName, sf2, &ai);
     }
     else /* if (ulParam1 & MCI_OPEN_MMIO) */
     {
@@ -95,7 +105,7 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
         extern KMDECIOFUNCS io;
 
         if (!rc)
-            pInst->dec = kmdecOpenFdEx(fd, "e:/2gmgsmt.sf2", &ai, &io);
+            pInst->dec = kmdecOpenFdEx(fd, sf2, &ai, &io);
     }
 
     if (!rc && !pInst->dec)

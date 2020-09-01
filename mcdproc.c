@@ -32,6 +32,7 @@
 #include "mcdtemp.h"                 // MCD Function Prototypes and typedefs
 
 CHAR szLogFile[] = "x:\\MMOS2\\KSOFTSEQ.LOG";
+CHAR szDefaultSf2[] = "x:\\MMOS2\\KSOFTSEQ.SF2";
 
 int _CRT_init(void);
 void _CRT_term(void);
@@ -55,7 +56,9 @@ unsigned long _System _DLL_InitTerm(unsigned long hmod, unsigned long flag)
         DosQuerySysInfo(QSV_BOOT_DRIVE, QSV_BOOT_DRIVE,
                         &ulBootDrive, sizeof(ulBootDrive));
 
-        szLogFile[0] = ulBootDrive + 'A' - 1;
+        ulBootDrive += 'A' - 1;
+        szLogFile[0] = ulBootDrive;
+        szDefaultSf2[0] = ulBootDrive;
 
         return 1;
 

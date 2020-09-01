@@ -161,6 +161,7 @@ RC    MCIStop (FUNCTION_PARM_BLOCK *pFuncBlock);
 /***********************************************/
 
 extern CHAR szLogFile[];
+extern CHAR szDefaultSf2[];
 
 #define LOG_ENTER(format, ...) \
         kloggerFile(szLogFile, "%s entered: " format, __func__, __VA_ARGS__)

@@ -26,6 +26,7 @@
 #include "mcdtemp.h"                 // Function Prototypes.
 
 #include <errno.h>                   // errno, EINVAL
+#include <sys/stat.h>                // stat()
 
 /* callback for KAI */
 static ULONG APIENTRY kaiCallback(PVOID pCBData,
@@ -208,27 +209,37 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
         ai.channels = 2;
         ai.sampleRate = 44100;
 
-        if (ulParam1 & MCI_OPEN_ELEMENT)
+        if (ulParam1 & (MCI_OPEN_ELEMENT | MCI_OPEN_MMIO))
            {
-           strcpy(pInstance->szFileName, pDrvOpenParms->pszElementName);
+           const char *sf2 = getenv("KSOFTSEQ_SF2");
+           struct stat st;
 
-           pInstance->dec = kmdecOpen(pInstance->szFileName,
-                                      "e:/2gmgsmt.sf2", &ai);
-           }
-        else if (ulParam1 & MCI_OPEN_MMIO)
-           {
-           HMMIO fd = (HMMIO)pDrvOpenParms->pszElementName;
+           if (!sf2 || stat(sf2, &st) == -1)
+              sf2 = szDefaultSf2;
 
-           pInstance->dec = kmdecOpenFdEx(fd, "e:/2gmgsmt.sf2", &ai, &io);
-           }
+           LOG_MSG("sf2 = [%s]", sf2);
 
-        if (ulParam1 & (MCI_OPEN_ELEMENT | MCI_OPEN_MMIO) && !pInstance->dec)
-           {
-           DosCloseMutexSem(pInstance->hmtxAccessSem);
+           if (ulParam1 & MCI_OPEN_ELEMENT)
+              {
+              strcpy(pInstance->szFileName, pDrvOpenParms->pszElementName);
 
-           free(pInstance);
+              pInstance->dec = kmdecOpen(pInstance->szFileName, sf2, &ai);
+              }
+           else /* if (ulParam1 & MCI_OPEN_MMIO) */
+              {
+              HMMIO fd = (HMMIO)pDrvOpenParms->pszElementName;
 
-           LOG_RETURN(MCIERR_DRIVER_INTERNAL);
+              pInstance->dec = kmdecOpenFdEx(fd, sf2, &ai, &io);
+              }
+
+           if (!pInstance->dec)
+              {
+              DosCloseMutexSem(pInstance->hmtxAccessSem);
+
+              free(pInstance);
+
+              LOG_RETURN(MCIERR_DRIVER_INTERNAL);
+              }
            }
 
         KAISPEC ksWanted, ksObtained;
