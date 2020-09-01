@@ -60,7 +60,8 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
-    LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+    LOG_ENTER("ulParam1 = 0x%lx, ulFrom = %ld, ulTo = %ld",
+              ulParam1, pParam2->ulFrom, pParam2->ulTo);
 
     /*******************************************************/
     /* Validate that we have only valid flags              */
@@ -68,11 +69,37 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCIPLAYVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    /* MCI_FROM and MCI_TO are not supported yet */
-    if (ulParam1 & (MCI_FROM | MCI_TO))
-        LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
-
     DosRequestMutexSem(pInst->hmtxAccessSem, -2);
+
+    if (ulParam1 & MCI_FROM)
+    {
+        ULONG ulFrom = ConvertTime(pParam2->ulFrom, pInst->ulTimeFormat,
+                                   MCI_FORMAT_MILLISECONDS);
+
+        if (kmdecSeek(pInst->dec, ulFrom, KMDEC_SEEK_SET) == -1)
+        {
+            DosReleaseMutexSem(pInst->hmtxAccessSem);
+
+            LOG_RETURN(MCIERR_DRIVER_INTERNAL);
+        }
+    }
+
+    if (ulParam1 & MCI_TO)
+    {
+        ULONG ulTo = ConvertTime(pParam2->ulTo, pInst->ulTimeFormat,
+                                 MCI_FORMAT_MILLISECONDS);
+
+        if (ulTo > kmdecGetDuration(pInst->dec))
+        {
+            DosReleaseMutexSem(pInst->hmtxAccessSem);
+
+            LOG_RETURN(MCIERR_OUTOFRANGE);
+        }
+
+        pInst->ulEndPosition = ulTo;
+    }
+    else
+        pInst->ulEndPosition = 0;
 
     pInst->playNotify.hwndCallback = (ulParam1 & MCI_NOTIFY) ?
                                      pParam2->hwndCallback : NULLHANDLE;

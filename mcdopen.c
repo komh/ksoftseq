@@ -35,6 +35,11 @@ static ULONG APIENTRY kaiCallback(PVOID pCBData,
 
     int written = kmdecDecode(pInst->dec, pBuffer, ulBufferSize);
 
+    int pos = kmdecGetPosition(pInst->dec);
+
+    if (pInst->ulEndPosition && pos > pInst->ulEndPosition)
+        written = 0;
+
     if (written < ulBufferSize && pInst->playNotify.hwndCallback)
     {
         mdmDriverNotify(pInst->usDeviceID,
@@ -42,8 +47,6 @@ static ULONG APIENTRY kaiCallback(PVOID pCBData,
                         MM_MCINOTIFY, pInst->playNotify.usUserParm,
                         MAKEULONG(MCI_PLAY, MCI_NOTIFY_SUCCESSFUL));
     }
-
-    int pos = kmdecGetPosition(pInst->dec);
 
     for (int i = 0; i < MAX_CUE_POINTS; i++)
     {
