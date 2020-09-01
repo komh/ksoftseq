@@ -1,0 +1,59 @@
+MciInstallDrv =
+    (
+    DrvInstallName      = "KSOFTSEQ01"
+    DrvDeviceType       = 8
+    DrvDeviceFlag       = 01L
+    DrvVersionNumber    = "1.0.0"
+    DrvProductInfo      = "K Soft Sequencer"
+    DrvMCDDriver        = "KSOFTSEQ"
+    DrvVSDDriver        = ""
+    DrvPDDName          = ""
+    DrvMCDTable         = "MDM"
+    DrvVSDTable         = ""
+    DrvShareType        = 3     /* Limited multiple-context */
+    DrvResourceName     = "KSoftSequencer01"
+    DrvResourceUnits    = 1
+    DrvClassArray[1]    =
+        (
+            (DrvClassNumber     = 1)
+        )
+    )
+
+MciInstallAlias =
+    (
+        AliasInstallName    = "KSOFTSEQ01"
+        AliasString         = "K Soft Sequencer"
+    )
+
+/*
+MciInstallConn =
+    (
+    ConnInstallName = "KSOFTSEQ01"
+    ConnArray[1]    =
+        (
+            (
+                ConnType        = 3                 / Wavestream connector /
+                ConnInstallTo   = "MyAmpMixSB01"    / Connect to ampmixer  /
+                ConnIndexTo     = 1                 / First connector in
+                                                      ampmixer             /
+            )
+        )
+    )
+*/
+
+MciInstallExt =
+    (
+    ExtInstallName  = "KSOFTSEQ01"
+    ExtArray[1]     =
+        (
+            (ExtString  = "MID")
+        )
+    )
+
+/*
+MciInstallParm =
+    (
+    ParmInstallName = "KSOFTSEQ01"
+    ParmString      = ""
+    )
+*/
