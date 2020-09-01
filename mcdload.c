@@ -102,11 +102,10 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
         HMMIO fd = (HMMIO)pParam2->pszElementName;
         extern KMDECIOFUNCS io;
 
-        if (!rc)
-            pInst->dec = kmdecOpenFdEx(fd, sf2, &ai, &io);
+        pInst->dec = kmdecOpenFdEx(fd, sf2, &ai, &io);
     }
 
-    if (!rc && !pInst->dec)
+    if (!pInst->dec)
         rc = MCIERR_DRIVER_INTERNAL;
 
     memset(pInst->cueNotify, 0, sizeof(pInst->cueNotify));
