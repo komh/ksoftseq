@@ -75,7 +75,6 @@ RC MCIClose (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*****************************************************/
   kaiClose(pInstance->hkai);
   kmdecClose(pInstance->dec);
-  free(pInstance);
 
   /***************************************************************/
   /* Send back a notification if the notify flag was on          */

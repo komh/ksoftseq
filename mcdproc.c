@@ -272,6 +272,11 @@ ULONG APIENTRY mciDriverEntry(PVOID pInstance,
       DosSleep(1);
     }
 
+  if (usMessage == MCI_CLOSE && !ulrc)
+    {
+      DosCloseMutexSem(ParamBlock.pInstance->hmtxAccessSem);
+      free(ParamBlock.pInstance);
+    }
 
   LOG_RETURN(ulrc);    /* Return to MDM */
 
