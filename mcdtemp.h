@@ -160,14 +160,14 @@ RC    MCIStop (FUNCTION_PARM_BLOCK *pFuncBlock);
 /* Logging macros                              */
 /***********************************************/
 
-#define LOG_FILE    "\\ksoftseq.log"
+extern CHAR szLogFile[];
 
 #define LOG_ENTER(format, ...) \
-        kloggerFile(LOG_FILE, "%s entered: " format, __func__, __VA_ARGS__)
+        kloggerFile(szLogFile, "%s entered: " format, __func__, __VA_ARGS__)
 
 #define LOG_MSG(format, ...) \
-        kloggerFile(LOG_FILE, "%s: " format, __func__, __VA_ARGS__)
+        kloggerFile(szLogFile, "%s: " format, __func__, __VA_ARGS__)
 
 #define LOG_RETURN(rc) do { \
-        kloggerFile(LOG_FILE, "%s returned, rc = %ld", __func__, (rc)); \
+        kloggerFile(szLogFile, "%s returned, rc = %ld", __func__, (rc)); \
         return (rc); } while (0)

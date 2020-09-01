@@ -31,6 +31,8 @@
 #include <os2me.h>                   // MME includes files.
 #include "mcdtemp.h"                 // MCD Function Prototypes and typedefs
 
+CHAR szLogFile[] = "x:\\MMOS2\\KSOFTSEQ.LOG";
+
 int _CRT_init(void);
 void _CRT_term(void);
 void __ctordtorInit(void);
@@ -48,6 +50,12 @@ unsigned long _System _DLL_InitTerm(unsigned long hmod, unsigned long flag)
 
         if (kaiInit(KAIM_AUTO))
             return 0;
+
+        ULONG ulBootDrive;
+        DosQuerySysInfo(QSV_BOOT_DRIVE, QSV_BOOT_DRIVE,
+                        &ulBootDrive, sizeof(ulBootDrive));
+
+        szLogFile[0] = ulBootDrive + 'A' - 1;
 
         return 1;
 
