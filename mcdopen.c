@@ -178,6 +178,8 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
      ulrc = MCIERR_OUT_OF_MEMORY;
   else
      {
+     memset(pInstance, 0, sizeof(INSTANCE));
+
      if (DosCreateMutexSem(NULL,&(pInstance->hmtxAccessSem),DC_SEM_SHARED,FALSE))
         ulrc = MCIERR_DRIVER_INTERNAL;
 
@@ -187,7 +189,6 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
         /* Set up default values in instance structure.                    */
         /*  NOTE this is a minimal instance structure                      */
         /*******************************************************************/
-        memset(pInstance, 0, sizeof(INSTANCE));
         pInstance->usDeviceID = pDrvOpenParms->usDeviceID;
         pInstance->ulTimeFormat = MCI_FORMAT_MMTIME;
         pInstance->ulSpeedFormat = MCI_FORMAT_PERCENTAGE;
