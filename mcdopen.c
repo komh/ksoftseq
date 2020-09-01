@@ -34,6 +34,8 @@ static ULONG APIENTRY kaiCallback(PVOID pCBData,
 {
     PINSTANCE pInst = pCBData;
 
+    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
+
     int written = kmdecDecode(pInst->dec, pBuffer, ulBufferSize);
 
     int pos = kmdecGetPosition(pInst->dec);
@@ -82,6 +84,8 @@ static ULONG APIENTRY kaiCallback(PVOID pCBData,
 
         pInst->adviseNotify.ulNext = ulNext;
     }
+
+    DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     return written;
 }
