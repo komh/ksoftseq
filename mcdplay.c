@@ -69,19 +69,13 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCIPLAYVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
-
     if (ulParam1 & MCI_FROM)
     {
         ULONG ulFrom = ConvertTime(pParam2->ulFrom, pInst->ulTimeFormat,
                                    MCI_FORMAT_MILLISECONDS);
 
         if (kmdecSeek(pInst->dec, ulFrom, KMDEC_SEEK_SET) == -1)
-        {
-            DosReleaseMutexSem(pInst->hmtxAccessSem);
-
             LOG_RETURN(MCIERR_DRIVER_INTERNAL);
-        }
     }
 
     if (ulParam1 & MCI_TO)
@@ -90,11 +84,7 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
                                  MCI_FORMAT_MILLISECONDS);
 
         if (ulTo > kmdecGetDuration(pInst->dec))
-        {
-            DosReleaseMutexSem(pInst->hmtxAccessSem);
-
             LOG_RETURN(MCIERR_OUTOFRANGE);
-        }
 
         pInst->ulEndPosition = ulTo;
     }
@@ -107,15 +97,12 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
 
     kaiPlay(pInst->hkai);
 
-    if (ulParam1 & MCI_WAIT)
-    {
-        while (kaiStatus(pInst->hkai) & KAIS_PLAYING)
-            DosSleep(1);
-    }
-
-    DosReleaseMutexSem(pInst->hmtxAccessSem);
-
     /* notifying is done in kaiCallback() in mcdopen.c */
+
+    /*******************************************************************/
+    /* MCW_WAIT is processed in mciDriverEntry() in mcdproc.c to avoid */
+    /* a dead lock by hmtxAccessSem                                    */
+    /*******************************************************************/
 
     LOG_RETURN(rc);
 }

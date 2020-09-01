@@ -73,8 +73,6 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCILOADVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
-
     kaiStop(pInst->hkai);
 
     kmdecClose(pInst->dec);
@@ -115,8 +113,6 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
 
     pInst->adviseNotify.ulUnits = 0;
     pInst->adviseNotify.ulNext = 0;
-
-    DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     /***************************************************************/
     /* Send back a notification if the notify flag was on          */

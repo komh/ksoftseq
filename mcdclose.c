@@ -73,11 +73,9 @@ RC MCIClose (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*  performed.  See the other samples in the toolkit */
   /*  for streaming and MMIO considerations            */
   /*****************************************************/
-  DosRequestMutexSem (pInstance->hmtxAccessSem, -2);  // wait for semaphore
   kaiClose(pInstance->hkai);
   kmdecClose(pInstance->dec);
   free(pInstance);
-  DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
   /***************************************************************/
   /* Send back a notification if the notify flag was on          */

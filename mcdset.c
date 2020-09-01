@@ -74,8 +74,6 @@ RC MCISet(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCISETVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
-
     switch (ulParam1 & ~(MCI_WAIT | MCI_NOTIFY))
     {
         case MCI_SET_AUDIO | MCI_SET_ON:
@@ -116,8 +114,6 @@ RC MCISet(FUNCTION_PARM_BLOCK *pFuncBlock)
             rc = MCIERR_UNSUPPORTED_FLAG;
             break;
     }
-
-    DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     /***************************************************************/
     /* Send back a notification if the notify flag was on          */

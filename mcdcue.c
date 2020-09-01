@@ -72,8 +72,6 @@ RC MCISetCuePoint(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCISETCUEPOINTVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
-
     ULONG ulCuepoint = ConvertTime(pParam2->ulCuepoint, pInst->ulTimeFormat,
                                    MCI_FORMAT_MILLISECONDS);
 
@@ -138,8 +136,6 @@ RC MCISetCuePoint(FUNCTION_PARM_BLOCK *pFuncBlock)
             rc = MCIERR_UNSUPPORTED_FLAG;
             break;
     }
-
-    DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     /***************************************************************/
     /* Send back a notification if the notify flag was on          */

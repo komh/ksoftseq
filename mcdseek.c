@@ -70,8 +70,6 @@ RC MCISeek(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCISEEKVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
-
     int duration = kmdecGetDuration(pInst->dec);
     int to;
 
@@ -101,8 +99,6 @@ RC MCISeek(FUNCTION_PARM_BLOCK *pFuncBlock)
                                          ulUnits;
         }
     }
-
-    DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     /***************************************************************/
     /* Send back a notification if the notify flag was on          */

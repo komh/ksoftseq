@@ -72,8 +72,6 @@ RC MCISetPositionAdvise(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCISETPOSITIONADVISEVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
-
     switch (ulParam1 & ~(MCI_WAIT | MCI_NOTIFY))
     {
         case MCI_SET_POSITION_ADVISE_ON:
@@ -102,8 +100,6 @@ RC MCISetPositionAdvise(FUNCTION_PARM_BLOCK *pFuncBlock)
             pInst->adviseNotify.ulNext = 0;
             break;
     }
-
-    DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     /***************************************************************/
     /* Send back a notification if the notify flag was on          */

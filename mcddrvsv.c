@@ -74,11 +74,9 @@ RC MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*  performed.  See the other samples in the toolkit */
   /*  for streaming and MMIO considerations            */
   /*****************************************************/
-  DosRequestMutexSem (pInstance->hmtxAccessSem, -2);  // wait for semaphore
   pInstance->ulSavedStatus = kaiStatus(pInstance->hkai);
   kaiPause(pInstance->hkai);
   pInstance->Active = FALSE;
-  DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
   /* make compiler happy */
   (void)pDrvSaveParms;

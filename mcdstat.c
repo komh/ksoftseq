@@ -68,10 +68,6 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
 
   LOG_ENTER("ulParam1 = 0x%lx, ulItem = %ld", ulParam1, pStatusParms->ulItem);
 
-  /**********************************************************/
-  /* Lock access to this instance until this command is done*/
-  /**********************************************************/
-  DosRequestMutexSem (pInstance->hmtxAccessSem, -2);  // wait for semaphore
   switch (pStatusParms->ulItem)
     {
 
@@ -140,8 +136,6 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
 
     }   /* Switch */
 
-
-  DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
   /***************************************************************/
   /* Send back a notification if the notify flag was on          */

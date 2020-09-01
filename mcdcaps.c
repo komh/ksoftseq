@@ -72,8 +72,6 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCIGETDEVCAPSVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
-
     switch (ulParam1)
     {
         case MCI_GETDEVCAPS_MESSAGE:
@@ -186,8 +184,6 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
             rc = MCIERR_FLAGS_NOT_COMPATIBLE;
             break;
     }
-
-    DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     /***************************************************************/
     /* Send back a notification if the notify flag was on          */

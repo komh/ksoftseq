@@ -134,6 +134,9 @@ ULONG APIENTRY mciDriverEntry(PVOID pInstance,
   ParamBlock.ulParam1     = ulParam1;
   ParamBlock.pParam2      = (PVOID)pParam2;
 
+  if (usMessage != MCI_OPEN)
+    DosRequestMutexSem(ParamBlock.pInstance->hmtxAccessSem, -2);
+
   /***********************************************/
   /* Switch based on the MCI message.            */
   /* For each message perform error checking and */
@@ -258,6 +261,16 @@ ULONG APIENTRY mciDriverEntry(PVOID pInstance,
 
 
     }   /* Switch */
+
+  if (usMessage != MCI_OPEN)
+    DosReleaseMutexSem(ParamBlock.pInstance->hmtxAccessSem);
+
+  /* process MCI_WAIT of MCI_PLAY here to avoid a dead lock by hmtxAccessSem */
+  if (usMessage == MCI_PLAY && !ulrc && ulParam1 & MCI_WAIT)
+    {
+    while (kaiStatus(ParamBlock.pInstance->hkai) & KAIS_PLAYING)
+      DosSleep(1);
+    }
 
 
   LOG_RETURN(ulrc);    /* Return to MDM */

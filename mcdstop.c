@@ -68,11 +68,7 @@ RC MCIStop(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCISTOPVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
-
     kaiStop(pInst->hkai);
-
-    DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     /***************************************************************/
     /* Send back a notification if the notify flag was on          */

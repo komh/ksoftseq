@@ -73,12 +73,10 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*  performed.  See the other samples in the toolkit */
   /*  for streaming and MMIO considerations            */
   /*****************************************************/
-  DosRequestMutexSem (pInstance->hmtxAccessSem, -2);  // wait for semaphore
   pInstance->Active = TRUE;                           // Set active to TRUE
   QMAudio(pInstance);                                 // Get master audio settings
   if (pInstance->ulSavedStatus & KAIS_PLAYING)
      kaiPlay(pInstance->hkai);
-  DosReleaseMutexSem (pInstance->hmtxAccessSem);      // release semaphore
 
   /* make compiler happy */
   (void)pDrvRestoreParms;

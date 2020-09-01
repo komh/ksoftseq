@@ -68,11 +68,7 @@ RC MCIResume(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCIRESUMEVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    DosRequestMutexSem(pInst->hmtxAccessSem, -2);
-
     kaiResume(pInst->hkai);
-
-    DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     /***************************************************************/
     /* Send back a notification if the notify flag was on          */
