@@ -1,0 +1,78 @@
+K SOFT SEQuencer
+----------------
+
+ksoftseq is a software sequencer for OS/2.
+
+ksoftseq enables you to play a midi file on OS/2 without any external programs.
+
+That is, ksoftseq is a MCD(Media Control Driver).
+
+ksoftseq can:
+
+  * play a midi file by clicking a icon on WPS
+  * play a midi file with play.cmd in a command line
+  * play a HMMIO handle of a midi file opened with MMIO_NOTRANSLATE or
+    MMIO_TRANSLATEHEADER
+  * seek
+  * ...
+
+ksoftseq cannot:
+
+  * play with MIDI program(MIDI editor) in Multimedia folder
+  * play with Player which is shown when you list a sub menu of `Open'
+  * play a HMMIO handle of a midi file opened with MMIO_TRANSLATEDATA
+  * play MCI_OPEN_PLAYLIST
+  * ...
+
+Installation
+------------
+
+1. Unzip ksoftseq zip file into any directory
+2. CD into the directory
+3. execute 'minstall.exe' in the directory
+4. Click 'Install' button
+5. Click 'Yes' button
+6. Click 'OK' button
+7. Copy your own SoundFont2 file to KSOFTSEQ.SF2 in X:\\MMOS2, where X is
+   a boot drive
+8. Or you can specify the qualified path of your own SoundFont2 with
+   KSOFTSEQ_SF2 environmental variable in CONFIG.SYS like:
+
+     SET KSOFTSEQ_SF2=C:\path\to\your\soundfont2\file.sf2
+
+   ksoftseq will try to find the SoundFont2 file pointed by KSOFTSEQ_SF2.
+   If KSOFTSEQ_SF2 is not set or the file does not exist, then try to use
+   KSOFTSEQ.SF2 in X:\MMOMS2, where X is your boot drive.
+9. Reboot
+
+History
+-------
+
+  * v1.0.0 ( 2020/09/02 )
+    - Initial release
+
+Libraries to build ksoftseq
+---------------------------
+
+  * libkai v1.3.1
+  * kmididec v0.2.0
+  * fluidsynth v1.0.9
+
+Contact
+-------
+
+    https://github.com/komh/ksoftseq/issuess
+
+Donation
+--------
+
+  If you are satisfied with this program and want to donate to me, please visit
+the following URL.
+
+    http://www.os2.kr/komh/os2factory/
+
+  Or, please click the Ads in the following blog.
+
+    https://lvzuufx.blogspot.com/
+
+KO Myung-Hun
