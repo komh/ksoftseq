@@ -1,0 +1,27 @@
+                          Upload Information Template for Hobbes.nmsu.edu
+                          ===============================================
+
+        Archive Filename: ksoftseq-@VER@.zip
+       Short Description: ksoftseq v@VER@
+        Long Description: ksoftseq v@VER@
+K Soft Sequencer(ksoftseq) is a Media Control Driver(MCD) to play a midi
+file without any external programs.
+
+      Proposed directory
+           for placement: /pub/os2/apps/mmedia/sound/players
+
+               Your name: KO Myung-Hun
+           Email address: komh@chollian.net
+    Program contact name: (same)
+   Program contact email: (same)
+             Program URL: https://github.com/komh/ksoftseq
+
+      Would you like the
+   contact email address
+    included in listings? yes
+
+Operating System/Version:
+ Additional requirements: kLIBC v0.6.6, libkai v1.3.1, kmididec v0.2.0,
+                          fluidsynth v1.0.9
+
+                Replaces: (none)
