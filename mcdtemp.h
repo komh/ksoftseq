@@ -127,13 +127,9 @@ typedef FUNCTION_PARM_BLOCK *PFUNCTION_PARM_BLOCK;
 * MCI Message Support Functions
 ***********************************************/
 RC   MCIOpen          (FUNCTION_PARM_BLOCK *);// Open
-RC   MCIOpenErr       (FUNCTION_PARM_BLOCK *);// Open Error
 RC   MCIClose         (FUNCTION_PARM_BLOCK *);// Close
-RC   MCICloseErr      (FUNCTION_PARM_BLOCK *);// Close Error
 RC   MCIDRVSave       (FUNCTION_PARM_BLOCK *);// Save
-RC   MCIDRVSaveErr    (FUNCTION_PARM_BLOCK *);// Save Error
 RC   MCIDRVRestore    (FUNCTION_PARM_BLOCK *);// Restore
-RC   MCIDRVRestoreErr (FUNCTION_PARM_BLOCK *);// Restore Error
 
 /***********************************************/
 /* List of valid instance states or modes      */
@@ -157,19 +153,14 @@ ULONG  EXPENTRY mciDriverEntry ( PVOID    pInstance,
                                  PVOID     pParam2,
                                  USHORT   usUserParm);
 RC    MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock);
-RC    MCIOpenErr (FUNCTION_PARM_BLOCK *pFuncBlock);
 VOID  GetINIInstallName(PINSTANCE pInstance);
 VOID  GetDeviceInfo(PINSTANCE pInstance);
 VOID  QMAudio(PINSTANCE pInstance);
 RC    MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock);
-RC    MCIStatusErr (FUNCTION_PARM_BLOCK *pFuncBlock);
 ULONG ConvertTime(ULONG ulTime, ULONG ulCurrentFormat, ULONG ulNewFormat);
 RC    MCIInfo   (FUNCTION_PARM_BLOCK *pFuncBlock);
-RC    MCIInfoErr (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock);
-RC    MCIDRVRestoreErr (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock);
-RC    MCIDRVSaveErr (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCICaps (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCILoad (FUNCTION_PARM_BLOCK *pFuncBlock);
 RC    MCIPause (FUNCTION_PARM_BLOCK *pFuncBlock);

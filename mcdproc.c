@@ -170,39 +170,27 @@ ULONG APIENTRY mciDriverEntry(PVOID pInstance,
     {
 
     case MCI_OPEN:
-      ulrc = MCIOpenErr(&ParamBlock);
-      if (!ulrc)
-         ulrc = MCIOpen(&ParamBlock);
+      ulrc = MCIOpen(&ParamBlock);
      break;
 
     case MCI_CLOSE:
-      ulrc = MCICloseErr(&ParamBlock);
-      if (!ulrc)
-         ulrc = MCIClose(&ParamBlock);
+      ulrc = MCIClose(&ParamBlock);
      break;
 
     case MCIDRV_SAVE:
-      ulrc = MCIDRVSaveErr(&ParamBlock);
-      if (!ulrc)
-         ulrc = MCIDRVSave(&ParamBlock);
+      ulrc = MCIDRVSave(&ParamBlock);
      break;
 
     case MCIDRV_RESTORE:
-      ulrc = MCIDRVRestoreErr(&ParamBlock);
-      if (!ulrc)
-         ulrc = MCIDRVRestore(&ParamBlock);
+      ulrc = MCIDRVRestore(&ParamBlock);
      break;
 
     case MCI_STATUS:
-      ulrc = MCIStatusErr(&ParamBlock);
-      if (!ulrc)
-         ulrc = MCIStatus(&ParamBlock);
+      ulrc = MCIStatus(&ParamBlock);
      break;
 
     case MCI_INFO:
-      ulrc = MCIInfoErr(&ParamBlock);
-      if (!ulrc)
-         ulrc = MCIInfo(&ParamBlock);
+      ulrc = MCIInfo(&ParamBlock);
      break;
 
     case MCI_GETDEVCAPS:

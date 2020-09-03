@@ -37,7 +37,6 @@
 /*                                                                          */
 /* ENTRY POINTS:                                                            */
 /*       MCIClose() - MCI_CLOSE message handler                             */
-/*       MCICloseErr() - Error handler for MCI_CLOSE message                */
 /****************************************************************************/
 #define INCL_BASE                    // Base OS2 functions
 #define INCL_DOSSEMAPHORES           // OS2 Semaphore function
@@ -90,6 +89,12 @@ RC MCIClose (FUNCTION_PARM_BLOCK *pFuncBlock)
 
   LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
 
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCICLOSEVALIDFLAGS))
+     LOG_RETURN(MCIERR_INVALID_FLAG);
+
   /*****************************************************/
   /* NOTE ----->>>                                     */
   /*  This is the basic function that should be        */
@@ -113,54 +118,3 @@ RC MCIClose (FUNCTION_PARM_BLOCK *pFuncBlock)
   LOG_RETURN(ulrc);
 
 }      /* end of MCIClose */
-
-
-/****************************************************************************/
-/*                                                                          */
-/* SUBROUTINE NAME:  MCICloseErr                                            */
-/*                                                                          */
-/* DESCRIPTIVE NAME:  Error handler for MCI_CLOSE message.                  */
-/*                                                                          */
-/* FUNCTION:  Process the close message for errors                          */
-/*                                                                          */
-/* PARAMETERS:                                                              */
-/*      FUNCTION_PARM_BLOCK *pFuncBlock - Pointer to call function block    */
-/*                                                                          */
-/* EXIT CODES:                                                              */
-/*      MCIERR_SUCCESS    -- Action completed without error.                */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*                                                                          */
-/****************************************************************************/
-RC MCICloseErr (FUNCTION_PARM_BLOCK *pFuncBlock)
-{
-  ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
-  ULONG                ulParam1;                 // Message flags
-  PMCI_GENERIC_PARMS   pCloseParms;              // Pointer to GENERIC structure
-  PINSTANCE            pInstance;                // Pointer to instance
-
-  /*****************************************************/
-  /* dereference the values from pFuncBlock            */
-  /*****************************************************/
-  ulParam1       = pFuncBlock->ulParam1;
-  pInstance      = pFuncBlock->pInstance;
-  pCloseParms    = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
-
-  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
-
-  /*******************************************************/
-  /* Validate that we have only valid flags              */
-  /*******************************************************/
-  if (ulParam1 & ~(MCICLOSEVALIDFLAGS))
-     LOG_RETURN(MCIERR_INVALID_FLAG);
-
-  /* make compiler happy */
-  (void)pInstance;
-  (void)pCloseParms;
-
-
-  LOG_RETURN(ulrc);
-
-}      /* end of MCICloseErr */

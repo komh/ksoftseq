@@ -36,7 +36,6 @@
 /*                                                                          */
 /* ENTRY POINTS:                                                            */
 /*       MCIStatus - Process the mci_status message and return status       */
-/*       MCIStatusErr - Process the mci_status message for errors           */
 /****************************************************************************/
 #define INCL_BASE
 #define INCL_DOSSEMAPHORES
@@ -90,6 +89,12 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
   pStatusParms   = (PMCI_STATUS_PARMS)pFuncBlock->pParam2;
 
   LOG_ENTER("ulParam1 = 0x%lx, ulItem = %ld", ulParam1, pStatusParms->ulItem);
+
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCISTATUSVALIDFLAGS))
+     LOG_RETURN(MCIERR_INVALID_FLAG);
 
   switch (pStatusParms->ulItem)
     {
@@ -174,54 +179,3 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
   LOG_RETURN(ulrc);
 
 }      /* end of MCIStatus */
-
-
-/****************************************************************************/
-/*                                                                          */
-/* SUBROUTINE NAME:  MCIStatusErr                                           */
-/*                                                                          */
-/* DESCRIPTIVE NAME:  MCI_STATUS message processor for errors               */
-/*                                                                          */
-/* FUNCTION:  Process the MCI_STATUS message for errors                     */
-/*                                                                          */
-/* PARAMETERS:                                                              */
-/*      FUNCTION_PARM_BLOCK  *pFuncBlock -- Pointer to function parameter   */
-/*                                          block.                          */
-/* EXIT CODES:                                                              */
-/*      MCIERR_SUCCESS    -- Action completed without error.                */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*                                                                          */
-/****************************************************************************/
-RC MCIStatusErr (FUNCTION_PARM_BLOCK *pFuncBlock)
-{
-  ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
-  ULONG                ulParam1;                 // Message flags
-  PMCI_STATUS_PARMS    pStatusParms;             // Pointer to status structure
-  PINSTANCE            pInstance;                // Pointer to instance
-
-  /*****************************************************/
-  /* dereference the values from pFuncBlock            */
-  /*****************************************************/
-  ulParam1       = pFuncBlock->ulParam1;
-  pInstance      = pFuncBlock->pInstance;
-  pStatusParms   = (PMCI_STATUS_PARMS)pFuncBlock->pParam2;
-
-  LOG_ENTER("ulParam1 = 0x%lx, ulItem = %ld", ulParam1, pStatusParms->ulItem);
-
-  /*******************************************************/
-  /* Validate that we have only valid flags              */
-  /*******************************************************/
-  if (ulParam1 & ~(MCISTATUSVALIDFLAGS))
-     LOG_RETURN(MCIERR_INVALID_FLAG);
-
-  /* make compiler happy */
-  (void)pInstance;
-
-
-  LOG_RETURN(ulrc);
-
-}      /* end of MCIStatusErr */
-

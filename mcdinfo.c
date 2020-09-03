@@ -35,7 +35,6 @@
 /*                                                                          */
 /* ENTRY POINTS:                                                            */
 /*       MCIInfo() - MCI_INFO message handler                               */
-/*       MCIInfoErr() - Error handler for MCI_INFO message                  */
 /****************************************************************************/
 #define INCL_BASE                    // Base OS2 functions
 #define INCL_DOSSEMAPHORES           // OS2 Semaphore function
@@ -90,6 +89,12 @@ RC MCIInfo   (FUNCTION_PARM_BLOCK *pFuncBlock)
 
   LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
 
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCIINFOVALIDFLAGS))
+     LOG_RETURN(MCIERR_INVALID_FLAG);
+
 
   switch (ulParam1 & MCD_INFO_FLAGS)
     {
@@ -137,56 +142,3 @@ RC MCIInfo   (FUNCTION_PARM_BLOCK *pFuncBlock)
   LOG_RETURN(ulrc);
 
 }      /* end of MCIInfo */
-
-
-/****************************************************************************/
-/*                                                                          */
-/* SUBROUTINE NAME:  MCIInfoErr                                             */
-/*                                                                          */
-/* DESCRIPTIVE NAME:  MCI_INFO message error processor                      */
-/*                                                                          */
-/* FUNCTION:  Process the MCI_INFO message for errors.                      */
-/*                                                                          */
-/* PARAMETERS:                                                              */
-/*      FUNCTION_PARM_BLOCK  *pFuncBlock -- Pointer to function parameter   */
-/*                                          block.                          */
-/* EXIT CODES:                                                              */
-/*      MCIERR_SUCCESS    -- Action completed without error.                */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*                                                                          */
-/****************************************************************************/
-RC MCIInfoErr (FUNCTION_PARM_BLOCK *pFuncBlock)
-{
-  ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
-  ULONG                ulParam1;                 // Message flags
-  PMCI_INFO_PARMS      pInfoParms;               // Pointer to info structure
-  PINSTANCE            pInstance;                // Pointer to instance
-
-  /*****************************************************/
-  /* dereference the values from pFuncBlock            */
-  /*****************************************************/
-  ulParam1       = pFuncBlock->ulParam1;
-  pInstance      = pFuncBlock->pInstance;
-  pInfoParms     = (PMCI_INFO_PARMS)pFuncBlock->pParam2;
-
-  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
-
-  /*******************************************************/
-  /* Validate that we have only valid flags              */
-  /*******************************************************/
-  if (ulParam1 & ~(MCIINFOVALIDFLAGS))
-     LOG_RETURN(MCIERR_INVALID_FLAG);
-
-  /* make compiler happy */
-  (void)pInstance;
-  (void)pInfoParms;
-
-
-  LOG_RETURN(ulrc);
-
-}      /* end of MCIInfoErr */
-
-

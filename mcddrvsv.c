@@ -36,7 +36,6 @@
 /*                                                                          */
 /* ENTRY POINTS:                                                            */
 /*       MCIDRVSave() - MCIDRV_SAVE message handler                         */
-/*       MCIDRVSaveErr() - Error handler for MCIDRV_SAVE message            */
 /****************************************************************************/
 #define INCL_BASE                    // Base OS2 functions
 #define INCL_DOSSEMAPHORES           // OS2 Semaphore function
@@ -91,6 +90,12 @@ RC MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock)
 
   LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
 
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCIDRVSAVEVALIDFLAGS))
+     LOG_RETURN(MCIERR_INVALID_FLAG);
+
   /*****************************************************/
   /* NOTE ----->>>                                     */
   /*  This is the basic function that should be        */
@@ -108,54 +113,3 @@ RC MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock)
   LOG_RETURN(ulrc);
 
 }      /* end of MCIDRVSave */
-
-
-/****************************************************************************/
-/*                                                                          */
-/* SUBROUTINE NAME:  MCIDRVSaveErr                                          */
-/*                                                                          */
-/* DESCRIPTIVE NAME:  MCIDRV_SAVE message processor for errors.             */
-/*                                                                          */
-/* FUNCTION:  Process the MCIDRV_SAVE message for errors.                   */
-/*                                                                          */
-/* PARAMETERS:                                                              */
-/*      FUNCTION_PARM_BLOCK  *pFuncBlock -- Pointer to function parameter   */
-/*                                          block.                          */
-/* EXIT CODES:                                                              */
-/*      MCIERR_SUCCESS    -- Action completed without error.                */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*                                                                          */
-/****************************************************************************/
-RC MCIDRVSaveErr (FUNCTION_PARM_BLOCK *pFuncBlock)
-{
-  ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
-  ULONG                ulParam1;                 // Message flags
-  PMCI_GENERIC_PARMS   pDrvSaveParms;            // Pointer to GENERIC structure
-  PINSTANCE            pInstance;                // Pointer to instance
-
-  /*****************************************************/
-  /* dereference the values from pFuncBlock            */
-  /*****************************************************/
-  ulParam1       = pFuncBlock->ulParam1;
-  pInstance      = pFuncBlock->pInstance;
-  pDrvSaveParms     = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
-
-  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
-
-  /*******************************************************/
-  /* Validate that we have only valid flags              */
-  /*******************************************************/
-  if (ulParam1 & ~(MCIDRVSAVEVALIDFLAGS))
-     LOG_RETURN(MCIERR_INVALID_FLAG);
-
-  /* make compiler happy */
-  (void)pInstance;
-  (void)pDrvSaveParms;
-
-
-  LOG_RETURN(ulrc);
-
-}      /* end of MCIDRVSaveErr */

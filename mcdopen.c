@@ -36,7 +36,6 @@
 /*                                                                          */
 /* ENTRY POINTS:                                                            */
 /*       MCIOpen() - MCI_OPEN message handler                               */
-/*       MCIOpenErr() - Error handler for MCI_OPEN message                  */
 /****************************************************************************/
 #define INCL_BASE                    // Base OS2 functions
 #define INCL_DOSSEMAPHORES           // OS2 Semaphore function
@@ -194,6 +193,16 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
             pFuncBlock->ulParam1, pDrvOpenParms->pszElementName,
             ulParam1 & MCI_OPEN_ELEMENT ? pDrvOpenParms->pszElementName : "");
 
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCIOPENVALIDFLAGS))
+     LOG_RETURN(MCIERR_INVALID_FLAG);
+
+  /* MCI_OPEN_PLAYLIST are not supported */
+  if (ulParam1 & MCI_OPEN_PLAYLIST)
+     LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
+
   /*******************************************************************/
   /* Allocate and initialize the instance structure                  */
   /*******************************************************************/
@@ -303,59 +312,3 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
   LOG_RETURN(ulrc);
 
 }      /* end of MCIOpen */
-
-
-/****************************************************************************/
-/*                                                                          */
-/* SUBROUTINE NAME:  MCIOpenErr                                             */
-/*                                                                          */
-/* DESCRIPTIVE NAME:  MCI_OPEN message processor for errors                 */
-/*                                                                          */
-/* FUNCTION:  Process the MCI_OPEN message for errors                       */
-/*                                                                          */
-/* PARAMETERS:                                                              */
-/*      FUNCTION_PARM_BLOCK  *pFuncBlock -- Pointer to function parameter   */
-/*                                          block.                          */
-/* EXIT CODES:                                                              */
-/*      MCIERR_SUCCESS    -- Action completed without error.                */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*                                                                          */
-/****************************************************************************/
-RC MCIOpenErr (FUNCTION_PARM_BLOCK *pFuncBlock)
-{
-  ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
-  ULONG                ulParam1;                 // Message flags
-  PMMDRV_OPEN_PARMS    pDrvOpenParms;            // Pointer to MMDRV_OPEN structure
-  PINSTANCE            pInstance;                // Pointer to instance
-
-  /*****************************************************/
-  /* dereference the values from pFuncBlock            */
-  /*****************************************************/
-  ulParam1       = pFuncBlock->ulParam1;
-  pDrvOpenParms  = (PMMDRV_OPEN_PARMS)pFuncBlock->pParam2;
-
-  LOG_ENTER("ulParam1 = 0x%lx, pszElementName = %p, [%s]",
-            pFuncBlock->ulParam1, pDrvOpenParms->pszElementName,
-            ulParam1 & MCI_OPEN_ELEMENT ? pDrvOpenParms->pszElementName : "");
-
-  /*******************************************************/
-  /* Validate that we have only valid flags              */
-  /*******************************************************/
-  if (ulParam1 & ~(MCIOPENVALIDFLAGS))
-     LOG_RETURN(MCIERR_INVALID_FLAG);
-
-  /* MCI_OPEN_PLAYLIST are not supported */
-  if (ulParam1 & MCI_OPEN_PLAYLIST)
-     LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
-
-  /* make compiler happy */
-  (void)pInstance;
-
-
-  LOG_RETURN(ulrc);
-
-}      /* end of MCIOpenErr */
-

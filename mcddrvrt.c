@@ -36,7 +36,6 @@
 /*                                                                          */
 /* ENTRY POINTS:                                                            */
 /*       MCIDRVRestore() - MCIDRV_RESTORE message handler                   */
-/*       MCIDRVRestoreErr() - Error handler for MCIDRV_RESTORE message      */
 /****************************************************************************/
 #define INCL_BASE                    // Base OS2 functions
 #define INCL_DOSSEMAPHORES           // OS2 Semaphore function
@@ -90,6 +89,12 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
 
   LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
 
+  /*******************************************************/
+  /* Validate that we have only valid flags              */
+  /*******************************************************/
+  if (ulParam1 & ~(MCIDRVRESTOREVALIDFLAGS))
+     LOG_RETURN(MCIERR_INVALID_FLAG);
+
   /*****************************************************/
   /* NOTE ----->>>                                     */
   /*  This is the basic function that should be        */
@@ -102,57 +107,6 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
      kaiPlay(pInstance->hkai);
 
   /* make compiler happy */
-  (void)pDrvRestoreParms;
-
-
-  LOG_RETURN(ulrc);
-
-}      /* end of Open */
-
-
-/****************************************************************************/
-/*                                                                          */
-/* SUBROUTINE NAME:  MCIDRVRestoreErr                                       */
-/*                                                                          */
-/* DESCRIPTIVE NAME:  MCIDRV_RESTORE message handler for errors             */
-/*                                                                          */
-/* FUNCTION:  Check for errors for the MCIDRV_RESTORE message.              */
-/*                                                                          */
-/* PARAMETERS:                                                              */
-/*      FUNCTION_PARM_BLOCK  *pFuncBlock -- Pointer to function parameter   */
-/*                                          block.                          */
-/* EXIT CODES:                                                              */
-/*      MCIERR_SUCCESS    -- Action completed without error.                */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*            .                                                             */
-/*                                                                          */
-/****************************************************************************/
-RC MCIDRVRestoreErr (FUNCTION_PARM_BLOCK *pFuncBlock)
-{
-  ULONG                ulrc = MCIERR_SUCCESS;    // Propogated Error Code
-  ULONG                ulParam1;                 // Message flags
-  PMCI_GENERIC_PARMS   pDrvRestoreParms;         // Pointer to GENERIC structure
-  PINSTANCE            pInstance;                // Pointer to instance
-
-  /*****************************************************/
-  /* dereference the values from pFuncBlock            */
-  /*****************************************************/
-  ulParam1       = pFuncBlock->ulParam1;
-  pInstance      = pFuncBlock->pInstance;
-  pDrvRestoreParms = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
-
-  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
-
-  /*******************************************************/
-  /* Validate that we have only valid flags              */
-  /*******************************************************/
-  if (ulParam1 & ~(MCIDRVRESTOREVALIDFLAGS))
-     LOG_RETURN(MCIERR_INVALID_FLAG);
-
-  /* make compiler happy */
-  (void)pInstance;
   (void)pDrvRestoreParms;
 
 
