@@ -35,6 +35,7 @@ Installation
 6. Click 'OK' button
 7. Copy your own SoundFont2 file to KSOFTSEQ.SF2 in X:\\MMOS2, where X is
    a boot drive
+
 8. Or you can specify the qualified path of your own SoundFont2 with
    KSOFTSEQ_SF2 environmental variable in CONFIG.SYS like:
 
@@ -43,7 +44,11 @@ Installation
    ksoftseq will try to find the SoundFont2 file pointed by KSOFTSEQ_SF2.
    If KSOFTSEQ_SF2 is not set or the file does not exist, then try to use
    KSOFTSEQ.SF2 in X:\MMOMS2, where X is your boot drive.
-9. Reboot
+
+9. Add 'SET KAI_AUTOMODE=DART' to CONFIG.SYS. Without this, your system may
+   become unstable because Uniaud APIs are not supported well nowadays.
+
+10. Reboot
 
 History
 -------
