@@ -19,7 +19,6 @@ ksoftseq can:
 ksoftseq cannot:
 
   * play with MIDI program(MIDI editor) in Multimedia folder
-  * play with Player which is shown when you list a sub menu of `Open'
   * play a HMMIO handle of a midi file opened with MMIO_TRANSLATEDATA
   * play MCI_OPEN_PLAYLIST
   * ...
@@ -52,6 +51,10 @@ Installation
 
 History
 -------
+
+  * v1.0.1 ( 2020/09/03 )
+    - Fixed MINSTALL(KIEWITZ) problems. Issue #5. Reported by DavidMcKenna.
+    - Fixed Player on WPS could not play a midi file. Issue #3.
 
   * v1.0.0 ( 2020/09/02 )
     - Initial release
