@@ -195,5 +195,6 @@ extern CHAR szDefaultSf2[];
         kloggerFile(szLogFile, "%s: " format, __func__, __VA_ARGS__)
 
 #define LOG_RETURN(rc) do { \
-        kloggerFile(szLogFile, "%s returned, rc = %ld", __func__, (rc)); \
+        kloggerFile(szLogFile, "%s returned, rc = %ld(0x%lx)", \
+                    __func__, (rc), (rc)); \
         return (rc); } while (0)
