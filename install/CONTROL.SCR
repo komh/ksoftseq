@@ -10,7 +10,8 @@ medianame   = "K Soft Sequencer for OS/2 Installation Diskette"
 sourcedir   = "\\"  = 0
 
 /* Destination Directories */
-destindir   = "\\MMOS2\\DLL\\"  = 0
+destindir   = "\\MMOS2\\DLL\\"      = 0
+destindir   = "\\MMOS2\\INSTALL\\"  = 1
 
 ssgroup     = 3
 sssize      = 300

@@ -1,5 +1,6 @@
 /*  Total Number of Entries */
-    1
+    2
 
 /* Disk#  Group#  Dest#   Source#   Filename  */
     0       3       0       0       "KSOFTSEQ.DLL"
+    0       3       1       0       "KSOFTSEQ.SCR"
