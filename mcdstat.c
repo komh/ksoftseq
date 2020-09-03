@@ -151,6 +151,11 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
          ConvertTime(kmdecGetPosition(pInstance->dec), MCI_FORMAT_MILLISECONDS, pInstance->ulTimeFormat);
      break;
 
+    case MCI_STATUS_MEDIA_PRESENT:
+     ULONG_HIWD(ulrc) = MCI_TRUE_FALSE_RETURN;
+     pStatusParms->ulReturn = MCI_TRUE;
+     break;
+
     case MCI_SEQ_STATUS_DIVTYPE:
     case MCI_SEQ_STATUS_MASTER:
     case MCI_SEQ_STATUS_OFFSET:
