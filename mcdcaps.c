@@ -95,7 +95,7 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (ulParam1 & ~(MCIGETDEVCAPSVALIDFLAGS))
         LOG_RETURN(MCIERR_INVALID_FLAG);
 
-    switch (ulParam1)
+    switch (ulParam1 & ~(MCI_WAIT | MCI_NOTIFY))
     {
         case MCI_GETDEVCAPS_MESSAGE:
             switch (pParam2->usMessage)
@@ -205,6 +205,10 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
 
         case MCI_GETDEVCAPS_MESSAGE | MCI_GETDEVCAPS_ITEM:
             rc = MCIERR_FLAGS_NOT_COMPATIBLE;
+            break;
+
+        default:
+            rc = MCIERR_UNSUPPORTED_FLAG;
             break;
     }
 
