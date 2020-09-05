@@ -27,15 +27,17 @@ Installation
 ------------
 
 1. Unzip ksoftseq zip file into any directory
-2. CD into the directory
-3. execute 'minstall.exe' in the directory
-4. Click 'Install' button
-5. Click 'Yes' button
-6. Click 'OK' button
-7. Copy your own SoundFont2 file to KSOFTSEQ.SF2 in X:\\MMOS2, where X is
-   a boot drive
 
-8. Or you can specify the qualified path of your own SoundFont2 with
+2. CD into the directory
+
+3. Execute 'minstall.exe' in the directory.
+
+4. Follow the instruction of 'minstall'.exe
+
+4. After installing, copy your own SoundFont2 file to KSOFTSEQ.SF2 in
+   X:\\MMOS2, where X is a boot drive
+
+5. Or you can specify the qualified path of your own SoundFont2 with
    KSOFTSEQ_SF2 environmental variable in CONFIG.SYS like:
 
      SET KSOFTSEQ_SF2=C:\path\to\your\soundfont2\file.sf2
@@ -44,10 +46,10 @@ Installation
    If KSOFTSEQ_SF2 is not set or the file does not exist, then try to use
    KSOFTSEQ.SF2 in X:\MMOMS2, where X is your boot drive.
 
-9. Add 'SET KAI_AUTOMODE=DART' to CONFIG.SYS. Without this, your system may
+6. Add 'SET KAI_AUTOMODE=DART' to CONFIG.SYS. Without this, your system may
    become unstable because Uniaud APIs are not supported well nowadays.
 
-10. Reboot
+7. Reboot
 
 History
 -------
