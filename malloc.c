@@ -21,25 +21,117 @@
 **
 ****************************************************************************/
 
+#define INCL_DOS
+#include <os2.h>
+
+#include <string.h>
+
 #include <emx/umalloc.h>
+
+#include "mcdtemp.h"
+
+#define MIN_OF_DOSALLOCMEM  ( 64 * 1024 )
+
+struct PTRINFO
+{
+    void *magic;
+    size_t size;
+};
 
 void *malloc(size_t size)
 {
-    void *ptr = _hmalloc(size);
+    struct PTRINFO *p;
 
-    return ptr ? ptr : _lmalloc(size);
+    if (size < MIN_OF_DOSALLOCMEM)
+        p = _hmalloc(size + sizeof(*p));
+    else
+    {
+        if (DosAllocMem((PPVOID)&p, size + sizeof(*p),
+                        fPERM | PAG_COMMIT | OBJ_ANY))
+            p = NULL;
+
+        LOG_MSG("DosAllocMem(%d) = %p", size, p + 1);
+    }
+
+    if (p)
+    {
+        p->magic = size < MIN_OF_DOSALLOCMEM ?
+                        (void *)_hmalloc : (void *)DosAllocMem;
+        p->size = size;
+
+        return p + 1;
+    }
+
+    return NULL;
 }
 
 void *calloc(size_t elements, size_t size)
 {
-    void *ptr = _hcalloc(elements, size);
+    void *p = malloc(elements * size);
 
-    return ptr ? ptr : _lcalloc(elements, size);
+    if (p)
+        memset(p, 0, elements * size);
+
+    return p;
 }
+
+void *_std_realloc(void *, size_t);
 
 void *realloc(void *mem, size_t size)
 {
-    void *ptr = _hrealloc(mem, size);
+    if (!mem)
+        return malloc(size);
 
-    return ptr ? ptr : _lrealloc(mem, size);
+    if (mem && !size)
+    {
+        free(mem);
+
+        return NULL;
+    }
+
+    struct PTRINFO *p = mem;
+    p--;
+
+    /*
+     * If memory block was not allocated by _hmalloc() nor DosAllocMem(),
+     * use _std_realloc() because it's not possible to know size of mem.
+     */
+    if (p->magic != _hmalloc && p->magic != DosAllocMem)
+        return _std_realloc(mem, size);
+
+    void *newMem = malloc(size);
+
+    if (!newMem)
+        return NULL;
+
+    if (size > p->size)
+        size = p->size;
+
+    memcpy(newMem, mem, size);
+
+    free(mem);
+
+    return newMem;
+}
+
+void _std_free(void *);
+
+void free(void *mem)
+{
+    if (!mem)
+        return;
+
+    struct PTRINFO *p = mem;
+    p--;
+
+    if (p->magic == _hmalloc)
+        _std_free(p);
+    else if (p->magic == DosAllocMem)
+    {
+        int size = p->size;
+
+        LOG_MSG("DosFreeMem(%p, %d) = %ld", mem, size, DosFreeMem(p));
+    }
+    else
+        _std_free(mem);
 }
