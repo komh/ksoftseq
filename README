@@ -54,6 +54,10 @@ Installation
 History
 -------
 
+  * v1.0.2 ( 2020/09/13 )
+    - Fixed Some midi files hang desktop. Issue #6. Reported by DavidMcKenna.
+    - Fixed It's not possible to load a very large SF2 file of about 410MiB.
+
   * v1.0.1 ( 2020/09/03 )
     - Fixed MINSTALL(KIEWITZ) problems. Issue #5. Reported by DavidMcKenna.
     - Fixed Player on WPS could not play a midi file. Issue #3.
