@@ -118,7 +118,17 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
                                      pParam2->hwndCallback : NULLHANDLE;
     pInst->playNotify.usUserParm = pFuncBlock->usUserParm;
 
+    PTIB ptib;
+    ULONG ulSavedPri;
+
+    DosGetInfoBlocks(&ptib, NULL);
+    ulSavedPri = ptib->tib_ptib2->tib2_ulpri;
+
+    DosSetPriority(PRTYS_THREAD, PRTYC_TIMECRITICAL, 0, 0);
+
     kaiPlay(pInst->hkai);
+
+    DosSetPriority(PRTYS_THREAD, HIBYTE(ulSavedPri), LOBYTE(ulSavedPri), 0);
 
     /* notifying is done in kaiCallback() in mcdopen.c */
 
