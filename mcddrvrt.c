@@ -103,8 +103,9 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*****************************************************/
   pInstance->Active = TRUE;                           // Set active to TRUE
   QMAudio(pInstance);                                 // Get master audio settings
-  if (pInstance->ulSavedStatus & KAIS_PLAYING)
-     kaiPlay(pInstance->hkai);
+  if ((pInstance->ulSavedStatus & (KAIS_PLAYING | KAIS_PAUSED)) ==
+      KAIS_PLAYING)
+     kaiResume(pInstance->hkai);
 
   /* make compiler happy */
   (void)pDrvRestoreParms;

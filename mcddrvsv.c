@@ -103,7 +103,9 @@ RC MCIDRVSave (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*  for streaming and MMIO considerations            */
   /*****************************************************/
   pInstance->ulSavedStatus = kaiStatus(pInstance->hkai);
-  kaiPause(pInstance->hkai);
+  if ((pInstance->ulSavedStatus & (KAIS_PLAYING | KAIS_PAUSED)) ==
+      KAIS_PLAYING)
+    kaiPause(pInstance->hkai);
   pInstance->Active = FALSE;
 
   /* make compiler happy */
