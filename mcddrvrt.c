@@ -107,6 +107,9 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
       KAIS_PLAYING)
      kaiResume(pInstance->hkai);
 
+  /* clear ulSavedStatus for MCIDRV_RESTORE to an active instance */
+  pInstance->ulSavedStatus = 0;
+
   /* make compiler happy */
   (void)pDrvRestoreParms;
 
