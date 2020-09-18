@@ -58,6 +58,11 @@ Installation
 History
 -------
 
+  * v1.1.0 ( 2020/09/19 )
+    - Added Support of OS/2 real-time MIDI data translated by
+      MMIO_TRANSLATEDATA
+    - Fixed Choppy sound when CPU load is high
+
   * v1.0.2 ( 2020/09/13 )
     - Fixed Some midi files hang desktop. Issue #6. Reported by DavidMcKenna.
     - Fixed It's not possible to load a very large SF2 file of about 410MiB.

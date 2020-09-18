@@ -39,7 +39,7 @@
 
 #include "klogger.h"
 
-#define KSOFTSEQ_VERSION    "1.0.2"
+#define KSOFTSEQ_VERSION    "1.1.0"
 
 #define    MAX_FILE_NAME                255
 
