@@ -11,15 +11,19 @@ ksoftseq can:
 
   * play a midi file by clicking a icon on WPS
   * play a midi file with play.cmd in a command line
-  * play a HMMIO handle of a midi file opened with MMIO_NOTRANSLATE or
-    MMIO_TRANSLATEHEADER
+  * play a midi file with Player in Open menu
+  * play a midi file with MIDI Editor in Open menu
+  * play a midi file with MIDI program(MIDI editor) in Multimedia folder.
+    Although MIDI may complain like 'An error occurred while opening ...',
+    you can use features provided by MIDI without any problem if you press
+    'ESC' key or click 'Continue' button.
+  * play a HMMIO handle of a midi file opened with MMIO_NOTRANSLATE,
+    MMIO_TRANSLATEHEADER or MMIO_TRANSLATEDATA
   * seek
   * ...
 
 ksoftseq cannot:
 
-  * play with MIDI program(MIDI editor) in Multimedia folder
-  * play a HMMIO handle of a midi file opened with MMIO_TRANSLATEDATA
   * play MCI_OPEN_PLAYLIST
   * ...
 
