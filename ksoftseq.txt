@@ -21,7 +21,7 @@ file without any external programs.
     included in listings? yes
 
 Operating System/Version:
- Additional requirements: kLIBC v0.6.6, libkai v1.3.1, kmididec v0.2.1,
+ Additional requirements: kLIBC v0.6.6, libkai v1.3.1, kmididec v0.3.0,
                           fluidsynth v1.0.9
 
                 Replaces: (none)
