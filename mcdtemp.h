@@ -104,6 +104,7 @@ typedef struct _Instance {
     PLAYNOTIFY playNotify;
     CUENOTIFY cueNotify[MAX_CUE_POINTS];
     ADVISENOTIFY adviseNotify;
+    BOOL      InPlay;
     } INSTANCE;         /* Audio MCD MCI Instance Block */
 typedef INSTANCE *PINSTANCE;
 
