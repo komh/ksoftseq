@@ -16,7 +16,7 @@ destindir   = "\\MMOS2\\INSTALL\\"  = 1
 ssgroup     = 3
 sssize      = 300
 ssname      = "K Soft Sequencer"
-ssversion   = "1.1.0"
+ssversion   = "1.1.1"
 ssinich     = "KSOFTSEQ.SCR"
 /*ssicon      = "KSOFTSEQ.ICO"*/
 ssselect    = "YES"

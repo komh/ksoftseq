@@ -58,6 +58,9 @@ Installation
 History
 -------
 
+  * v1.1.1 ( 2021/05/22 )
+    - Fixed Dead-lock when trying to play
+
   * v1.1.0 ( 2020/09/19 )
     - Added Support of OS/2 real-time MIDI data translated by
       MMIO_TRANSLATEDATA
@@ -77,8 +80,8 @@ History
 Libraries to build ksoftseq
 ---------------------------
 
-  * libkai v1.3.1
-  * kmididec v0.3.0
+  * libkai v2.1.0
+  * kmididec v0.3.1
   * fluidsynth v1.0.9
 
 Contact
