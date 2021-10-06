@@ -101,7 +101,12 @@ RC MCIClose (FUNCTION_PARM_BLOCK *pFuncBlock)
   /*  performed.  See the other samples in the toolkit */
   /*  for streaming and MMIO considerations            */
   /*****************************************************/
+  pInstance->AvoidDeadLock = TRUE;
+
   kaiClose(pInstance->hkai);
+
+  pInstance->AvoidDeadLock = FALSE;
+
   kmdecClose(pInstance->dec);
 
   /***************************************************************/

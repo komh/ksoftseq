@@ -55,11 +55,11 @@ static ULONG APIENTRY kaiCallback(PVOID pCBData,
                                   PVOID pBuffer, ULONG ulBufferSize)
 {
     PINSTANCE pInst = pCBData;
-    BOOL NeedLock = !pInst->InPlay;
+    ULONG rc = ERROR_TIMEOUT;
 
-    /* prevent dead-lock in MCIPlay() */
-    if( NeedLock )
-        DosRequestMutexSem(pInst->hmtxAccessSem, -2);
+    /* prevent dead-lock in MCIPlay(), MCIStop() and MCIClose() */
+    while (!pInst->AvoidDeadLock && rc == ERROR_TIMEOUT)
+        rc = DosRequestMutexSem(pInst->hmtxAccessSem, 500);
 
     int written = kmdecDecode(pInst->dec, pBuffer, ulBufferSize);
 
@@ -110,7 +110,7 @@ static ULONG APIENTRY kaiCallback(PVOID pCBData,
         pInst->adviseNotify.ulNext = ulNext;
     }
 
-    if( NeedLock )
+    if (!rc)
         DosReleaseMutexSem(pInst->hmtxAccessSem);
 
     return written;

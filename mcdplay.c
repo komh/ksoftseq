@@ -126,11 +126,11 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
 
     DosSetPriority(PRTYS_THREAD, PRTYC_TIMECRITICAL, 0, 0);
 
-    pInst->InPlay = TRUE;
+    pInst->AvoidDeadLock = TRUE;
 
     kaiPlay(pInst->hkai);
 
-    pInst->InPlay = FALSE;
+    pInst->AvoidDeadLock = FALSE;
 
     DosSetPriority(PRTYS_THREAD, HIBYTE(ulSavedPri), LOBYTE(ulSavedPri), 0);
 
