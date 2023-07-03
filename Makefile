@@ -141,7 +141,7 @@ ksoftseq_SRCS      := mcdproc.c mcdclose.c mcddrvrt.c mcddrvsv.c mcdfuncs.c \
                       mcdinfo.c mcdopen.c mcdstat.c \
                       mcdcaps.c mcdload.c mcdpause.c mcdplay.c mcdresume.c \
                       mcdseek.c mcdset.c mcdcue.c mcdpos.c mcdstop.c \
-                      klogger.c malloc.
+                      klogger.c malloc.c
 ksoftseq_DLL       := yes
 ksoftseq_LDLIBS    := -lkai -lkmididec -lfluidsynth
 ksoftseq_DEF       := mcdtemp.def
