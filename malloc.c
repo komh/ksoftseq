@@ -50,7 +50,7 @@ void *malloc(size_t size)
                         fPERM | PAG_COMMIT | OBJ_ANY))
             p = NULL;
 
-        LOG_MSG("DosAllocMem(%d) = %p", size, p + 1);
+        LOG_MSG(2, "DosAllocMem(%d) = %p", size, p + 1);
     }
 
     if (p)
@@ -130,7 +130,7 @@ void free(void *mem)
     {
         int size = p->size;
 
-        LOG_MSG("DosFreeMem(%p, %d) = %ld", mem, size, DosFreeMem(p));
+        LOG_MSG(2, "DosFreeMem(%p, %d) = %ld", mem, size, DosFreeMem(p));
     }
     else
         _std_free(mem);

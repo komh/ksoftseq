@@ -30,10 +30,11 @@
 extern "C" {
 #endif
 
-void kloggerFdV(int fd, const char *format, va_list args);
-void kloggerFd(int fd, const char *format, ...);
-void kloggerFileV(const char *file, const char *format, va_list args);
-void kloggerFile(const char *file, const char *format, ...);
+void kloggerFdV(int depth, int fd, const char *format, va_list args);
+void kloggerFd(int depth, int fd, const char *format, ...);
+void kloggerFileV(int depth, const char *file,
+                  const char *format, va_list args);
+void kloggerFile(int depth, const char *file, const char *format, ...);
 
 #ifdef __cplusplus
 }

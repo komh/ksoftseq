@@ -86,14 +86,15 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
-    LOG_ENTER("ulParam1 = 0x%lx, usMessage = %d, ulItem = %d",
+    LOG_ENTER(++pInst->ulDepth,
+              "ulParam1 = 0x%lx, usMessage = %d, ulItem = %d",
               ulParam1, pParam2->usMessage, pParam2->ulItem);
 
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCIGETDEVCAPSVALIDFLAGS))
-        LOG_RETURN(MCIERR_INVALID_FLAG);
+        LOG_RETURN(pInst->ulDepth--, MCIERR_INVALID_FLAG);
 
     switch (ulParam1 & ~(MCI_WAIT | MCI_NOTIFY))
     {
@@ -222,5 +223,8 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
                              pFuncBlock->usUserParm,
                              MAKEULONG(MCI_GETDEVCAPS, MCI_NOTIFY_SUCCESSFUL));
 
-    LOG_RETURN(rc);
+    LOG_MSG(pInst->ulDepth, "ulReturn = %ld(0x%lx)",
+            pParam2->ulReturn, pParam2->ulReturn);
+
+    LOG_RETURN(pInst->ulDepth--, rc);
 }

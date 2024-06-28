@@ -84,14 +84,14 @@ RC MCISeek(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
-    LOG_ENTER("ulParam1 = 0x%lx, ulTo = %ld",
+    LOG_ENTER(++pInst->ulDepth, "ulParam1 = 0x%lx, ulTo = %ld",
               ulParam1, pParam2->ulTo);
 
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCISEEKVALIDFLAGS))
-        LOG_RETURN(MCIERR_INVALID_FLAG);
+        LOG_RETURN(pInst->ulDepth--, MCIERR_INVALID_FLAG);
 
     int duration = kmdecGetDuration(pInst->dec);
     int to;
@@ -133,5 +133,5 @@ RC MCISeek(FUNCTION_PARM_BLOCK *pFuncBlock)
                              pFuncBlock->usUserParm,
                              MAKEULONG(MCI_SEEK, MCI_NOTIFY_SUCCESSFUL));
 
-    LOG_RETURN(rc);
+    LOG_RETURN(pInst->ulDepth--, rc);
 }

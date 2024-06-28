@@ -86,7 +86,7 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
-    LOG_ENTER("ulParam1 = 0x%lx, pszElementName = %p, [%s]",
+    LOG_ENTER(++pInst->ulDepth, "ulParam1 = 0x%lx, pszElementName = %p, [%s]",
               ulParam1, pParam2->pszElementName,
               ulParam1 & MCI_OPEN_ELEMENT ? pParam2->pszElementName : "");
 
@@ -94,7 +94,7 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCILOADVALIDFLAGS))
-        LOG_RETURN(MCIERR_INVALID_FLAG);
+        LOG_RETURN(pInst->ulDepth--, MCIERR_INVALID_FLAG);
 
     kaiStop(pInst->hkai);
 
@@ -112,7 +112,7 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
     if (!sf2 || stat(sf2, &st) == -1)
         sf2 = szDefaultSf2;
 
-    LOG_MSG("sf2 = [%s]", sf2);
+    LOG_MSG(pInst->ulDepth, "sf2 = [%s]", sf2);
 
     if (ulParam1 & MCI_OPEN_ELEMENT)
     {
@@ -146,5 +146,5 @@ RC MCILoad(FUNCTION_PARM_BLOCK *pFuncBlock)
                              pFuncBlock->usUserParm,
                              MAKEULONG(MCI_LOAD, MCI_NOTIFY_SUCCESSFUL));
 
-    LOG_RETURN(rc);
+    LOG_RETURN(pInst->ulDepth--, rc);
 }

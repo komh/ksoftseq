@@ -105,6 +105,7 @@ typedef struct _Instance {
     CUENOTIFY cueNotify[MAX_CUE_POINTS];
     ADVISENOTIFY adviseNotify;
     BOOL volatile AvoidDeadLock;
+    ULONG     ulDepth;
     } INSTANCE;         /* Audio MCD MCI Instance Block */
 typedef INSTANCE *PINSTANCE;
 
@@ -180,13 +181,14 @@ RC    MCIStop (FUNCTION_PARM_BLOCK *pFuncBlock);
 extern CHAR szLogFile[];
 extern CHAR szDefaultSf2[];
 
-#define LOG_ENTER(format, ...) \
-        kloggerFile(szLogFile, "%s entered: " format, __func__, __VA_ARGS__)
+#define LOG_ENTER(depth, format, ...) \
+        kloggerFile((depth), szLogFile, "%s: entered, " format, \
+                    __func__, __VA_ARGS__)
 
-#define LOG_MSG(format, ...) \
-        kloggerFile(szLogFile, "%s: " format, __func__, __VA_ARGS__)
+#define LOG_MSG(depth, format, ...) \
+        kloggerFile((depth), szLogFile, "%s: " format, __func__, __VA_ARGS__)
 
-#define LOG_RETURN(rc) do { \
-        kloggerFile(szLogFile, "%s returned, rc = %ld(0x%lx)", \
+#define LOG_RETURN(depth, rc) do { \
+        kloggerFile((depth), szLogFile, "%s: returned, rc = %ld(0x%lx)", \
                     __func__, (rc), (rc)); \
         return (rc); } while (0)

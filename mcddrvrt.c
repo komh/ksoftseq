@@ -87,13 +87,13 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pDrvRestoreParms = (PMCI_GENERIC_PARMS)pFuncBlock->pParam2;
 
-  LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+  LOG_ENTER(++pInstance->ulDepth, "ulParam1 = 0x%lx", ulParam1);
 
   /*******************************************************/
   /* Validate that we have only valid flags              */
   /*******************************************************/
   if (ulParam1 & ~(MCIDRVRESTOREVALIDFLAGS))
-     LOG_RETURN(MCIERR_INVALID_FLAG);
+     LOG_RETURN(pInstance->ulDepth--, MCIERR_INVALID_FLAG);
 
   /*****************************************************/
   /* NOTE ----->>>                                     */
@@ -114,6 +114,6 @@ RC MCIDRVRestore (FUNCTION_PARM_BLOCK *pFuncBlock)
   (void)pDrvRestoreParms;
 
 
-  LOG_RETURN(ulrc);
+  LOG_RETURN(pInstance->ulDepth--, ulrc);
 
 }      /* end of Open */

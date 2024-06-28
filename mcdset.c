@@ -86,7 +86,8 @@ RC MCISet(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
-    LOG_ENTER("ulParam1 = 0x%lx, ulAudio = %ld, ulLevel = %ld, "
+    LOG_ENTER(++pInst->ulDepth,
+              "ulParam1 = 0x%lx, ulAudio = %ld, ulLevel = %ld, "
               "ulTimeFormat = %ld",
               ulParam1, pParam2->ulAudio, pParam2->ulLevel,
               pParam2->ulTimeFormat);
@@ -95,7 +96,7 @@ RC MCISet(FUNCTION_PARM_BLOCK *pFuncBlock)
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCISETVALIDFLAGS))
-        LOG_RETURN(MCIERR_INVALID_FLAG);
+        LOG_RETURN(pInst->ulDepth--, MCIERR_INVALID_FLAG);
 
     switch (ulParam1 & ~(MCI_WAIT | MCI_NOTIFY))
     {
@@ -148,5 +149,5 @@ RC MCISet(FUNCTION_PARM_BLOCK *pFuncBlock)
                              pFuncBlock->usUserParm,
                              MAKEULONG(MCI_SET, MCI_NOTIFY_SUCCESSFUL));
 
-    LOG_RETURN(rc);
+    LOG_RETURN(pInst->ulDepth--, rc);
 }

@@ -83,13 +83,13 @@ RC MCIStop(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
-    LOG_ENTER("ulParam1 = 0x%lx", ulParam1);
+    LOG_ENTER(++pInst->ulDepth, "ulParam1 = 0x%lx", ulParam1);
 
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCISTOPVALIDFLAGS))
-        LOG_RETURN(MCIERR_INVALID_FLAG);
+        LOG_RETURN(pInst->ulDepth--, MCIERR_INVALID_FLAG);
 
     pInst->AvoidDeadLock = TRUE;
 
@@ -107,5 +107,5 @@ RC MCIStop(FUNCTION_PARM_BLOCK *pFuncBlock)
                              pFuncBlock->usUserParm,
                              MAKEULONG(MCI_STOP, MCI_NOTIFY_SUCCESSFUL));
 
-    LOG_RETURN(rc);
+    LOG_RETURN(pInst->ulDepth--, rc);
 }

@@ -34,7 +34,7 @@
 
 #include "klogger.h"
 
-void kloggerFdV(int fd, const char *format, va_list args)
+void kloggerFdV(int depth, int fd, const char *format, va_list args)
 {
     static _fmutex lock = _FMUTEX_INITIALIZER;
 
@@ -49,9 +49,10 @@ void kloggerFdV(int fd, const char *format, va_list args)
 
     tm = *localtime( &t );
 
-    len = snprintf(msg, sizeof(msg), "%04d-%02d-%02d %02d:%02d:%02d ",
+    len = snprintf(msg, sizeof(msg), "%04d-%02d-%02d %02d:%02d:%02d%*c",
                    tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
-                   tm.tm_hour, tm.tm_min, tm.tm_sec);
+                   tm.tm_hour, tm.tm_min, tm.tm_sec,
+                   depth * 2 + 1, ' ');
 
     len += vsnprintf(msg + len, sizeof(msg) - len, format, args);
 
@@ -61,18 +62,19 @@ void kloggerFdV(int fd, const char *format, va_list args)
     _fmutex_release(&lock);
 }
 
-void kloggerFd(int fd, const char *format, ...)
+void kloggerFd(int depth, int fd, const char *format, ...)
 {
     va_list args;
 
     va_start(args, format);
 
-    kloggerFdV(fd, format, args);
+    kloggerFdV(depth, fd, format, args);
 
     va_end(args);
 }
 
-void kloggerFileV(const char *file, const char *format, va_list args)
+void kloggerFileV(int depth, const char *file,
+                  const char *format, va_list args)
 {
     int     fd;
 
@@ -80,19 +82,19 @@ void kloggerFileV(const char *file, const char *format, va_list args)
               S_IREAD | S_IWRITE);
     if (fd != -1)
     {
-        kloggerFdV(fd, format, args);
+        kloggerFdV(depth, fd, format, args);
 
         close(fd);
     }
 }
 
-void kloggerFile(const char *file, const char *format, ...)
+void kloggerFile(int depth, const char *file, const char *format, ...)
 {
     va_list args;
 
     va_start(args, format);
 
-    kloggerFileV(file, format, args);
+    kloggerFileV(depth, file, format, args);
 
     va_end(args);
 }

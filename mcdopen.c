@@ -193,7 +193,7 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
   ulParam1       = pFuncBlock->ulParam1;
   pDrvOpenParms  = (PMMDRV_OPEN_PARMS)pFuncBlock->pParam2;
 
-  LOG_ENTER("ulParam1 = 0x%lx, pszElementName = %p, [%s]",
+  LOG_ENTER(1, "ulParam1 = 0x%lx, pszElementName = %p, [%s]",
             pFuncBlock->ulParam1, pDrvOpenParms->pszElementName,
             ulParam1 & MCI_OPEN_ELEMENT ? pDrvOpenParms->pszElementName : "");
 
@@ -201,11 +201,11 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
   /* Validate that we have only valid flags              */
   /*******************************************************/
   if (ulParam1 & ~(MCIOPENVALIDFLAGS))
-     LOG_RETURN(MCIERR_INVALID_FLAG);
+     LOG_RETURN(1, MCIERR_INVALID_FLAG);
 
   /* MCI_OPEN_PLAYLIST are not supported */
   if (ulParam1 & MCI_OPEN_PLAYLIST)
-     LOG_RETURN(MCIERR_UNSUPPORTED_FLAG);
+     LOG_RETURN(1, MCIERR_UNSUPPORTED_FLAG);
 
   /*******************************************************************/
   /* Allocate and initialize the instance structure                  */
@@ -258,7 +258,7 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
            if (!sf2 || stat(sf2, &st) == -1)
               sf2 = szDefaultSf2;
 
-           LOG_MSG("sf2 = [%s]", sf2);
+           LOG_MSG(1, "sf2 = [%s]", sf2);
 
            if (ulParam1 & MCI_OPEN_ELEMENT)
               {
@@ -279,7 +279,7 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
 
               free(pInstance);
 
-              LOG_RETURN(MCIERR_DRIVER_INTERNAL);
+              LOG_RETURN(1, MCIERR_DRIVER_INTERNAL);
               }
            }
 
@@ -305,7 +305,7 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
 
            free(pInstance);
 
-           LOG_RETURN(MCIERR_DRIVER_INTERNAL);
+           LOG_RETURN(1, MCIERR_DRIVER_INTERNAL);
            }
 
         kaiEnableSoftVolume(pInstance->hkai, TRUE);
@@ -313,6 +313,6 @@ RC MCIOpen (FUNCTION_PARM_BLOCK *pFuncBlock)
      }
 
 
-  LOG_RETURN(ulrc);
+  LOG_RETURN(1, ulrc);
 
 }      /* end of MCIOpen */

@@ -88,13 +88,14 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
   pInstance      = pFuncBlock->pInstance;
   pStatusParms   = (PMCI_STATUS_PARMS)pFuncBlock->pParam2;
 
-  LOG_ENTER("ulParam1 = 0x%lx, ulItem = %ld", ulParam1, pStatusParms->ulItem);
+  LOG_ENTER(++pInstance->ulDepth, "ulParam1 = 0x%lx, ulItem = %ld",
+            ulParam1, pStatusParms->ulItem);
 
   /*******************************************************/
   /* Validate that we have only valid flags              */
   /*******************************************************/
   if (ulParam1 & ~(MCISTATUSVALIDFLAGS))
-     LOG_RETURN(MCIERR_INVALID_FLAG);
+     LOG_RETURN(pInstance->ulDepth--, MCIERR_INVALID_FLAG);
 
   switch (pStatusParms->ulItem)
     {
@@ -180,7 +181,9 @@ RC MCIStatus (FUNCTION_PARM_BLOCK *pFuncBlock)
                       pFuncBlock->usUserParm,
                       MAKEULONG (MCI_STATUS, MCI_NOTIFY_SUCCESSFUL));
 
+  LOG_MSG(pInstance->ulDepth, "ulReturn = %ld(0x%lx)",
+          pStatusParms->ulReturn, pStatusParms->ulReturn);
 
-  LOG_RETURN(ulrc);
+  LOG_RETURN(pInstance->ulDepth--, ulrc);
 
 }      /* end of MCIStatus */

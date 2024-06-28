@@ -83,14 +83,14 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
-    LOG_ENTER("ulParam1 = 0x%lx, ulFrom = %ld, ulTo = %ld",
+    LOG_ENTER(++pInst->ulDepth, "ulParam1 = 0x%lx, ulFrom = %ld, ulTo = %ld",
               ulParam1, pParam2->ulFrom, pParam2->ulTo);
 
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCIPLAYVALIDFLAGS))
-        LOG_RETURN(MCIERR_INVALID_FLAG);
+        LOG_RETURN(pInst->ulDepth--, MCIERR_INVALID_FLAG);
 
     if (ulParam1 & MCI_FROM)
     {
@@ -98,7 +98,7 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
                                    MCI_FORMAT_MILLISECONDS);
 
         if (kmdecSeek(pInst->dec, ulFrom, KMDEC_SEEK_SET) == -1)
-            LOG_RETURN(MCIERR_DRIVER_INTERNAL);
+            LOG_RETURN(pInst->ulDepth--, MCIERR_DRIVER_INTERNAL);
     }
 
     if (ulParam1 & MCI_TO)
@@ -107,7 +107,7 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
                                  MCI_FORMAT_MILLISECONDS);
 
         if (ulTo > kmdecGetDuration(pInst->dec))
-            LOG_RETURN(MCIERR_OUTOFRANGE);
+            LOG_RETURN(pInst->ulDepth--, MCIERR_OUTOFRANGE);
 
         pInst->ulEndPosition = ulTo;
     }
@@ -141,5 +141,5 @@ RC MCIPlay(FUNCTION_PARM_BLOCK *pFuncBlock)
     /* a dead lock by hmtxAccessSem                                    */
     /*******************************************************************/
 
-    LOG_RETURN(rc);
+    LOG_RETURN(pInst->ulDepth--, rc);
 }

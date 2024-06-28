@@ -86,14 +86,14 @@ RC MCISetCuePoint(FUNCTION_PARM_BLOCK *pFuncBlock)
     pParam2     = pFuncBlock->pParam2;
     pInst       = pFuncBlock->pInstance;
 
-    LOG_ENTER("ulParam1 = 0x%lx, ulCuepoint = %ld",
+    LOG_ENTER(++pInst->ulDepth, "ulParam1 = 0x%lx, ulCuepoint = %ld",
               ulParam1, pParam2->ulCuepoint);
 
     /*******************************************************/
     /* Validate that we have only valid flags              */
     /*******************************************************/
     if (ulParam1 & ~(MCISETCUEPOINTVALIDFLAGS))
-        LOG_RETURN(MCIERR_INVALID_FLAG);
+        LOG_RETURN(pInst->ulDepth--, MCIERR_INVALID_FLAG);
 
     ULONG ulCuepoint = ConvertTime(pParam2->ulCuepoint, pInst->ulTimeFormat,
                                    MCI_FORMAT_MILLISECONDS);
@@ -171,5 +171,5 @@ RC MCISetCuePoint(FUNCTION_PARM_BLOCK *pFuncBlock)
                              MAKEULONG(MCI_SET_CUEPOINT,
                                        MCI_NOTIFY_SUCCESSFUL));
 
-    LOG_RETURN(rc);
+    LOG_RETURN(pInst->ulDepth--, rc);
 }
