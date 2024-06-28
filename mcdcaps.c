@@ -136,15 +136,10 @@ RC MCICaps(FUNCTION_PARM_BLOCK *pFuncBlock)
                 case MCI_STEP:
                 case MCI_SYSINFO:
                 case MCI_UPDATE:
-                    pParam2->ulReturn = MCI_FALSE;
-                    rc = MAKEULONG(rc, MCI_TRUE_FALSE_RETURN);
-                    break;
-
-                /* empty message */
-                case 0:
+                case 0: /* empty message */
                 default:
                     pParam2->ulReturn = MCI_FALSE;
-                    rc = MCIERR_INVALID_FLAG;
+                    rc = MAKEULONG(rc, MCI_TRUE_FALSE_RETURN);
                     break;
             }
 
