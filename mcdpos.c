@@ -112,6 +112,8 @@ RC MCISetPositionAdvise(FUNCTION_PARM_BLOCK *pFuncBlock)
                 pInst->adviseNotify.usUserParm = pParam2->usUserParm;
                 pInst->adviseNotify.ulNext = ((pos + ulUnits - 1) / ulUnits) *
                                              ulUnits;
+                if (pInst->adviseNotify.ulNext == 0)
+                    pInst->adviseNotify.ulNext = ulUnits;
             }
             else
                 rc = MCIERR_OUTOFRANGE;
