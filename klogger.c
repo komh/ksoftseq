@@ -34,6 +34,16 @@
 
 #include "klogger.h"
 
+static int isDebugEnabled(void)
+{
+    static int debugEnabled = -1;
+
+    if (debugEnabled == -1)
+        debugEnabled = getenv("KSOFTSEQ_DEBUG") != NULL;
+
+    return debugEnabled;
+}
+
 void kloggerFdV(int depth, int fd, const char *format, va_list args)
 {
     static _fmutex lock = _FMUTEX_INITIALIZER;
@@ -42,6 +52,9 @@ void kloggerFdV(int depth, int fd, const char *format, va_list args)
     time_t  t;
     struct  tm tm;
     int     len;
+
+    if (!isDebugEnabled())
+        return;
 
     _fmutex_request(&lock, 0);
 
@@ -77,6 +90,9 @@ void kloggerFileV(int depth, const char *file,
                   const char *format, va_list args)
 {
     int     fd;
+
+    if (!isDebugEnabled())
+        return;
 
     fd = open(file, O_CREAT | O_WRONLY | O_APPEND | O_BINARY,
               S_IREAD | S_IWRITE);
